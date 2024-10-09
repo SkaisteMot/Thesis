@@ -1,4 +1,5 @@
 # Thesis Project
+> To Do: Describe project
 ## Plan
 - Create simple Algorithms
 - Simple UI
