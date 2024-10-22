@@ -3,7 +3,7 @@
 # https://medium.com/softplus-publication/video-object-tracking-with-yolov8-and-sort-library-e28444b189aa
 
 from ultralytics import YOLO
-import cv2
+from cv2 import cv2
 
 # Load YOLOv8 model
 model = YOLO('yolov8s.pt')

@@ -1,7 +1,7 @@
 # https://ai.google.dev/edge/mediapipe/solutions/vision/gesture_recognizer/python
 # https://colab.research.google.com/github/googlesamples/mediapipe/blob/main/examples/gesture_recognizer/python/gesture_recognizer.ipynb#scrollTo=Iy4r2_ePylIa
 # https://towardsdatascience.com/real-time-hand-tracking-and-gesture-recognition-with-mediapipe-rerun-showcase-9ec57cb0c831
-import cv2
+from cv2 import cv2
 import mediapipe as mp
 import numpy as np
 

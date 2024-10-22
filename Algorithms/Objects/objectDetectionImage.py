@@ -1,7 +1,7 @@
 from ultralytics import YOLO
 
 # Assuming you have opencv installed
-import cv2 
+from cv2 import cv2
 
 MODEL = "yolov8x.pt" 
 # Creating an instance of your chosen model

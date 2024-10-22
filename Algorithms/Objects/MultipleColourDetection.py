@@ -1,6 +1,6 @@
 # https://www.geeksforgeeks.org/multiple-color-detection-in-real-time-using-python-opencv/
 
-import cv2
+from cv2 import cv2
 import numpy as np
 import pandas as pd
 
