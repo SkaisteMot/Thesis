@@ -25,22 +25,22 @@ selected_colours = list(colour_ranges.keys())
 def detect_and_draw(image, colour_ranges, selected_colours, min_area=300):
     # Convert the image to HSV format
     hsv_img = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
-    
+
     for colour in selected_colours:
         lower, upper = colour_ranges[colour]
         lower = np.array(lower, dtype="uint8")
         upper = np.array(upper, dtype="uint8")
-        
+
         # Create a mask for the selected colour
         mask = cv2.inRange(hsv_img, lower, upper)
-        
+
         # Find contours (these will be the detected objects)
         contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-        
+
         # Draw bounding boxes around detected colours with a black line
         for contour in contours:
             area = cv2.contourArea(contour)  # Calculate the area of the contour
-            
+
             if area > min_area:  # Check if the area is above the minimum threshold
                 x, y, w, h = cv2.boundingRect(contour)
                 cv2.rectangle(image, (x, y), (x + w, y + h), (0, 0, 0), 2, lineType=cv2.LINE_AA)
@@ -63,13 +63,13 @@ try:
         if not ret:
             print("Error: Failed to capture image")
             break
-        
+
         # Detect and draw bounding boxes for selected colours
         result_frame = detect_and_draw(frame, colour_ranges, selected_colours, min_area=300)
-        
+
         # Show the result
         cv2.imshow("Detected Colours", result_frame)
-        
+
         # Break the loop on 'q' key press
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break

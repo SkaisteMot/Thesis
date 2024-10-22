@@ -110,7 +110,7 @@ while cap.isOpened():
 
     # Convert the frame to RGB format for MediaPipe
     frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-    
+
     # Process the frame and get hand landmarks
     results = hands.process(frame_rgb)
 
@@ -122,7 +122,7 @@ while cap.isOpened():
 
             # Recognize gesture and get emoji image
             emoji_img = recognize_gesture(hand_landmarks.landmark)
-        
+
             if emoji_img is not None:
                 # Display the emoji image in a separate window
                 cv2.imshow('Emoji', emoji_img)
