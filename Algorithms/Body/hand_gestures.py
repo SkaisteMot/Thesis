@@ -3,7 +3,6 @@
 # https://towardsdatascience.com/real-time-hand-tracking-and-gesture-recognition-with-mediapipe-rerun-showcase-9ec57cb0c831
 from cv2 import cv2
 import mediapipe as mp
-import numpy as np
 
 # Initialize MediaPipe Hands module
 mp_hands = mp.solutions.hands
