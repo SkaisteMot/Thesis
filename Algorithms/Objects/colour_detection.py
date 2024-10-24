@@ -1,5 +1,9 @@
-# https://www.geeksforgeeks.org/multiple-color-detection-in-real-time-using-python-opencv/
+"""
+Colour detection
 
+Code from:
+https://www.geeksforgeeks.org/multiple-color-detection-in-real-time-using-python-opencv/
+"""
 from cv2 import cv2
 import numpy as np
 import pandas as pd
@@ -19,10 +23,11 @@ def load_colour_ranges(csv_file):
 colour_ranges = load_colour_ranges('../../Datasets/colour_ranges.csv')
 
 # Use all colours from the CSV file
-selected_colours = list(colour_ranges.keys())
+selected_colours = list(colour_ranges.keys()) # is this needed? cant we just use the csv since all colours are used regardless?
 
 # Function to detect colours and draw bounding boxes with colour names
 def detect_and_draw(image, colour_ranges, selected_colours, min_area=300):
+    """Detect colours and draw a bounding box"""
     # Convert the image to HSV format
     hsv_img = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
 
