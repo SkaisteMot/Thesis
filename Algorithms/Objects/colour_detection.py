@@ -4,35 +4,32 @@ Colour detection
 Code from:
 https://www.geeksforgeeks.org/multiple-color-detection-in-real-time-using-python-opencv/
 """
-from cv2 import cv2
+import cv2
 import numpy as np
 import pandas as pd
 
 # Load the colour ranges from the CSV file
 def load_colour_ranges(csv_file):
+    """Load in CSV file of colours"""
     colour_data = pd.read_csv(csv_file)
-    colour_ranges = {}
+    colours = {}
     for _, row in colour_data.iterrows():
-        colour_ranges[row['colour']] = (
+        colours[row['colour']] = (
             [row['h_min'], row['s_min'], row['v_min']],
             [row['h_max'], row['s_max'], row['v_max']]
         )
-    return colour_ranges
+    return colours
 
 # Load colour ranges from CSV file
 colour_ranges = load_colour_ranges('../../Datasets/colour_ranges.csv')
 
-# Use all colours from the CSV file
-selected_colours = list(colour_ranges.keys()) # is this needed? cant we just use the csv since all colours are used regardless?
-
 # Function to detect colours and draw bounding boxes with colour names
-def detect_and_draw(image, colour_ranges, selected_colours, min_area=300):
+def detect_and_draw(image, colours, min_area=300):
     """Detect colours and draw a bounding box"""
     # Convert the image to HSV format
     hsv_img = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
 
-    for colour in selected_colours:
-        lower, upper = colour_ranges[colour]
+    for colour, (lower, upper) in colours.items():
         lower = np.array(lower, dtype="uint8")
         upper = np.array(upper, dtype="uint8")
 
@@ -70,7 +67,7 @@ try:
             break
 
         # Detect and draw bounding boxes for selected colours
-        result_frame = detect_and_draw(frame, colour_ranges, selected_colours, min_area=300)
+        result_frame = detect_and_draw(frame, colour_ranges, min_area=300)
 
         # Show the result
         cv2.imshow("Detected Colours", result_frame)
