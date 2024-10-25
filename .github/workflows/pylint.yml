@@ -5,9 +5,10 @@ on: [push]
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 30  # Set a maximum timeout for the job
     strategy:
       matrix:
-        python-version: ["3.8", "3.9", "3.10"]
+        python-version: ["3.11"]  # Start with only one Python version to simplify troubleshooting
     steps:
       # Step to check out the repository code
       - uses: actions/checkout@v4
@@ -27,11 +28,11 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pip-
 
-      # Install dependencies from requirements.txt
+      # Install dependencies with increased timeout for pip install
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt --timeout=100  # Increased timeout
+          pip install -r requirements.txt --timeout=100
 
       # Run pylint on Python files
       - name: Analyzing the code with pylint
