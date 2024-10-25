@@ -1,0 +1,10 @@
+deepface==0.0.93
+imutils==0.5.4
+mediapipe==0.10.14
+numpy==2.1.2
+opencv_contrib_python==4.10.0.84
+opencv_python==4.10.0.84
+pandas==2.2.3
+PyQt5==5.15.11
+ultralytics==8.3.18
+ultralytics==8.3.21
