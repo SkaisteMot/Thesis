@@ -1,5 +1,6 @@
 # https://github.com/manish-9245/Facial-Emotion-Recognition-using-OpenCV-and-Deepface/blob/main/emotion.py --->main
 # https://github.com/opencv/opencv/tree/master/samples/dnn/face_detector
+# https://github.com/keyurr2/face-detection/blob/master/README.md ----> try this one, has svm+hog and cnn, apparently svm+hog is good
 # https://github.com/Aaditya1978/Face_Expression_Prediction/tree/main
 
 import cv2
