@@ -1,3 +1,4 @@
+"""Hand Gesture and Image display for Hand 1 and Hand 2, no distinction between left or right"""
 import sys
 import cv2
 import mediapipe as mp
@@ -40,44 +41,34 @@ if not cap.isOpened():
 
 blank_image = 255 * np.ones((500, 600, 3), dtype=np.uint8)  # White blank image
 
-def display_gesture_info(frame, gestures_and_landmarks):
+def display_gesture_info(input_frame, gesture_data):
     """Draw gesture info and load corresponding icons."""
-    hand_images = [blank_image.copy(), blank_image.copy()]  # Initialize emoji for both hands
+    emoji_images = [blank_image.copy(), blank_image.copy()]  # Initialize emoji for both hands
 
     # Sort hands based on their x-coordinates (leftmost hand first)
-    sorted_hands = sorted(gestures_and_landmarks, key=lambda x: x[1][0].x)  # Sort by x-coordinate of the first landmark
+    sorted_hands = sorted(gesture_data, key=lambda x: x[1][0].x)
 
-    for index, (hand_gestures, hand_landmarks) in enumerate(sorted_hands):
+    for index, (current_hand_gestures, current_hand_landmarks) in enumerate(sorted_hands):
         # Get the top gesture for the hand
-        top_gesture = hand_gestures[0]
-        gesture_name = top_gesture.category_name  # Get the recognized gesture name
-
-        # Print gesture info for debugging
-        print(f"Detected Gesture: {gesture_name}, Hand: Hand {index + 1}")
+        top_gesture = current_hand_gestures[0]
+        current_gesture_name = top_gesture.category_name  # Get the recognized gesture name
 
         # Prepare the text to display
-        gesture_text = f"Hand {index + 1}: {gesture_name} ({top_gesture.score:.2f})"
-        cv2.putText(frame, gesture_text, (10, 30 + index * 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
-
-            # Load the icon for the recognized gesture
-        if gesture_name in gesture_icons:
-            icon = gesture_icons[gesture_name]
-            hand_images[index] = icon  # Load the icon for Hand 1 or Hand 2
-        else:
-            print(f"Gesture not found in icons: {gesture_name}")  # Debug print
-
-        # Draw landmarks for each hand
-        for landmark in hand_landmarks:  # Each landmark is a NormalizedLandmark
-            x = int(landmark.x * frame.shape[1])
-            y = int(landmark.y * frame.shape[0])
-            cv2.circle(frame, (x, y), 5, (0, 255, 0), -1)
+        gesture_text = f"Hand {index + 1}: {current_gesture_name} ({top_gesture.score:.2f})"
+        cv2.putText(input_frame, gesture_text, (10, 30 + index * 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
 
         # Load the icon for the recognized gesture
-        if gesture_name in gesture_icons:
-            icon = gesture_icons[gesture_name]
-            hand_images[index] = icon  # Load the icon for Hand 1 or Hand 2
+        if current_gesture_name in gesture_icons:
+            icon_image = gesture_icons[current_gesture_name]
+            emoji_images[index] = icon_image  # Load the icon for Hand 1 or Hand 2
 
-    return hand_images
+        # Draw landmarks for each hand
+        for landmark in current_hand_landmarks:  # Each landmark is a NormalizedLandmark
+            x = int(landmark.x * input_frame.shape[1])
+            y = int(landmark.y * input_frame.shape[0])
+            cv2.circle(input_frame, (x, y), 5, (0, 255, 0), -1)
+
+    return emoji_images
 
 while cap.isOpened():
     ret, frame = cap.read()
