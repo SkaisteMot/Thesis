@@ -7,8 +7,8 @@ from mediapipe.tasks.python import vision
 
 # Define paths in a separate dictionary
 icon_paths = {
-    'Thumb_up': '../../Datasets/HandIcons/thumbs_up.png',
-    'Thumb_down': '../../Datasets/HandIcons/thumbs_down.png',
+    'Thumb_Up': '../../Datasets/HandIcons/thumbs_up.png',
+    'Thumb_Down': '../../Datasets/HandIcons/thumbs_down.png',
     'Pointing_Up': '../../Datasets/HandIcons/point_up.png',
     'Victory': '../../Datasets/HandIcons/peace.png',
     'Closed_Fist': '../../Datasets/HandIcons/fist.png',
@@ -44,7 +44,10 @@ def display_gesture_info(frame, gestures_and_landmarks):
     """Draw gesture info and load corresponding icons."""
     hand_images = [blank_image.copy(), blank_image.copy()]  # Initialize emoji for both hands
 
-    for index, (hand_gestures, hand_landmarks) in enumerate(gestures_and_landmarks):
+    # Sort hands based on their x-coordinates (leftmost hand first)
+    sorted_hands = sorted(gestures_and_landmarks, key=lambda x: x[1][0].x)  # Sort by x-coordinate of the first landmark
+
+    for index, (hand_gestures, hand_landmarks) in enumerate(sorted_hands):
         # Get the top gesture for the hand
         top_gesture = hand_gestures[0]
         gesture_name = top_gesture.category_name  # Get the recognized gesture name
@@ -55,6 +58,13 @@ def display_gesture_info(frame, gestures_and_landmarks):
         # Prepare the text to display
         gesture_text = f"Hand {index + 1}: {gesture_name} ({top_gesture.score:.2f})"
         cv2.putText(frame, gesture_text, (10, 30 + index * 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
+
+            # Load the icon for the recognized gesture
+        if gesture_name in gesture_icons:
+            icon = gesture_icons[gesture_name]
+            hand_images[index] = icon  # Load the icon for Hand 1 or Hand 2
+        else:
+            print(f"Gesture not found in icons: {gesture_name}")  # Debug print
 
         # Draw landmarks for each hand
         for landmark in hand_landmarks:  # Each landmark is a NormalizedLandmark
