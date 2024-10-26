@@ -55,7 +55,8 @@ def display_gesture_info(input_frame, gesture_data):
 
         # Prepare the text to display
         gesture_text = f"Hand {index + 1}: {current_gesture_name} ({top_gesture.score:.2f})"
-        cv2.putText(input_frame, gesture_text, (10, 30 + index * 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
+        cv2.putText(input_frame, gesture_text, (10, 30 + index * 30),
+                    cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
 
         # Load the icon for the recognized gesture
         if current_gesture_name in gesture_icons:
@@ -87,7 +88,8 @@ while cap.isOpened():
     # Process the result for both hands
     gestures_and_landmarks = []
     if recognition_result.gestures:
-        for hand_gestures, hand_landmarks in zip(recognition_result.gestures, recognition_result.hand_landmarks):
+        for hand_gestures, hand_landmarks in zip(recognition_result.gestures,
+                                                 recognition_result.hand_landmarks):
             gestures_and_landmarks.append((hand_gestures, hand_landmarks))
 
     # Update emoji images with the recognized gestures
