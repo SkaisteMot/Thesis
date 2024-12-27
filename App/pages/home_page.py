@@ -11,17 +11,20 @@ from PyQt5.QtWidgets import (
 from PyQt5.QtSvg import QSvgRenderer
 from PyQt5.QtGui import QPixmap, QPainter, QColor, QFont
 from PyQt5.QtCore import Qt, QTimer
+from .hand_gesture_page import HandGestureRecognitionPage
+from .facial_expression_page import FacialExpressionRecognitionPage
+from .general_page import GeneralDemoPage
 
 
 class HomePage(QWidget):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("SensorFusion: Home")
-        self.setGeometry(100, 100, 800, 600)
         self.load_styles()
 
         # Main layout
         main_layout = QGridLayout()
+
         self.setLayout(main_layout)
 
         # SVG Renderer for the logo
@@ -29,19 +32,24 @@ class HomePage(QWidget):
 
         # Logo in the top-left corner
         self.logo_label = QLabel(self)
+        self.logo_label.setStyleSheet("background-color: blue;")
         main_layout.addWidget(self.logo_label, 0, 0, 1, 1, alignment=Qt.AlignTop | Qt.AlignLeft)
 
         # Title and introduction below the logo
         intro_container = QWidget()
+        intro_container.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        intro_container.setObjectName("intro_container")  # Add object name for styling
+        intro_container.setStyleSheet("background-color: green;")
         intro_layout = QVBoxLayout()
         title_label = QLabel("Welcome to SensorFusion", self)
         title_label.setObjectName("title")  # For styling via QSS
         intro_label = QLabel("Explore multi-sensor demos with cutting-edge technology!", self)
+        intro_label.setObjectName("intro_label")  # Add object name for styling
         intro_label.setWordWrap(True)  # Allow wrapping of long text
         intro_container.setLayout(intro_layout)
         intro_layout.addWidget(title_label)
         intro_layout.addWidget(intro_label)
-        main_layout.addWidget(intro_container, 1, 0, 1, 1, alignment=Qt.AlignLeft)
+        main_layout.addWidget(intro_container, 1, 0, 1, 1, alignment=Qt.AlignTop | Qt.AlignLeft)
 
         # Demo buttons on the right side
         self.button_container = QWidget()
@@ -59,6 +67,7 @@ class HomePage(QWidget):
 
         for text, handler in demo_buttons:
             button = QPushButton(text, self)
+            button.setObjectName("button")  # Add object name for styling
             button.clicked.connect(handler)
             button.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
             self.button_layout.addWidget(button)
@@ -140,11 +149,7 @@ class HomePage(QWidget):
         devices = wmi.ExecQuery(query)
 
         # If the query returns any matching device, it means the device is connected
-        if devices:
-            for device in devices:
-                if device.DeviceID:
-                    return True
-        return False
+        return any(device.DeviceID for device in devices)
 
     def render_logo(self, width, height):
         """Render the SVG logo to a QPixmap of specified dimensions."""
@@ -180,16 +185,20 @@ class HomePage(QWidget):
 
     # Handlers for demo buttons
     def open_hand_gesture_page(self):
-        print("Hand Gesture Recognition demo selected.")
+        self.hand_gesture_page=HandGestureRecognitionPage()
+        self.hand_gesture_page.show()
 
     def open_facial_expression_page(self):
-        print("Facial Expression Recognition demo selected.")
+        self.facial_expression_page=FacialExpressionRecognitionPage()
+        self.facial_expression_page.show()
 
     def open_object_detection_page(self):
-        print("Object Detection demo selected.")
+        self.object_detection_page=GeneralDemoPage("Object Detection","dummy description")
+        self.object_detection_page.show()
 
     def open_colour_detection_page(self):
-        print("Colour Detection demo selected.")
+        self.colour_detection_page=GeneralDemoPage("Colour Detection","dummy description")
+        self.colour_detection_page.show()
 
     def open_lidar_page(self):
         print("LiDAR demo selected.")
