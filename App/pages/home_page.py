@@ -193,11 +193,11 @@ class HomePage(QWidget):
         self.facial_expression_page.show()
 
     def open_object_detection_page(self):
-        self.object_detection_page=GeneralDemoPage("Object Detection","dummy description")
+        self.object_detection_page=GeneralDemoPage("Object Detection","dummy description","object")
         self.object_detection_page.show()
 
     def open_colour_detection_page(self):
-        self.colour_detection_page=GeneralDemoPage("Colour Detection","dummy description")
+        self.colour_detection_page=GeneralDemoPage("Colour Detection","dummy description","colour")
         self.colour_detection_page.show()
 
     def open_lidar_page(self):

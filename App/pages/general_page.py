@@ -10,6 +10,7 @@ sys.path.append(os.path.abspath("C:\\Users\\skais\\ThesisProject\\DevCode"))
 from Algorithms.Objects.colour_detection import ColourRecognizer
 from Algorithms.Objects.object_detection import ObjectRecognizer
 
+
 class GeneralDemoPage(QWidget):
     def __init__(self, title: str, description: str, algorithm: str):
         super().__init__()
@@ -61,13 +62,23 @@ class GeneralDemoPage(QWidget):
             print("Error: Could not open video stream.")
             sys.exit()
 
+        self.failed_frames = 0  # Counter for consecutive failed frames
         self.timer = self.startTimer(20)
 
     def timerEvent(self, event):
         ret, frame = self.cap.read()
         if not ret:
-            print("Failed to grab frame.")
+            self.failed_frames += 1
+            print(f"Failed to grab frame {self.failed_frames} times.")
+
+            # Close the stream if the threshold is reached
+            if self.failed_frames > 10:
+                print("Too many failed frames. Stopping the stream.")
+                self.close()  # Trigger close event
             return
+
+        # Reset failed frames counter on successful frame capture
+        self.failed_frames = 0
 
         if self.algorithm == "colour":
             processed_frame = self.recognizer.detect_and_draw(frame)
@@ -85,10 +96,13 @@ class GeneralDemoPage(QWidget):
 
     def closeEvent(self, event):
         # Release the video capture and stop the algorithm
-        self.cap.release()
+        if hasattr(self, 'cap') and self.cap.isOpened():
+            self.cap.release()
 
-        # If the recognizer uses any other background tasks or threads, stop them here
-        # For example, if there are timers or other resources, clean them up
+        print("Video stream and resources have been released.")
 
-        # Accept the close event (closes the window)
+        # Stop the timer
+        self.killTimer(self.timer)
+
+        # Accept the close event
         event.accept()
