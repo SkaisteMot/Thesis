@@ -8,6 +8,11 @@ import sys
 import cv2
 import numpy as np
 import pandas as pd
+import numpy as np
+
+class ColourRecognizer:
+    def __init__(self, colour_ranges_csv):
+        self.colour_ranges = self.load_colour_ranges(colour_ranges_csv)
 
 # Load the colour ranges from the CSV file
 def load_colour_ranges(csv_file):

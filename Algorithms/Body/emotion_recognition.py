@@ -1,61 +1,66 @@
-"""Emotion Recogntion and displaying emoji in seperate window"""
+
 import cv2
+import numpy as np
 from fer import FER
+from dataclasses import dataclass
+from typing import Optional
 
-# Initialize the FER detector
-detector = FER()
+@dataclass
+class EmotionResult:
+    main_frame: np.ndarray
+    emoji: np.ndarray
 
-# Load emojis for each emotion
-emoji_dict = {
-    'happy': cv2.imread("../../Datasets/Emojis/happy.png"),
-    'sad': cv2.imread("../../Datasets/Emojis/sad.png"),
-    'angry': cv2.imread("../../Datasets/Emojis/angry.png"),
-    'surprise': cv2.imread("../../Datasets/Emojis/surprised.png"),
-    'fear': cv2.imread("../../Datasets/Emojis/fear.png"),
-    'neutral': cv2.imread("../../Datasets/Emojis/neutral.png"),
-    'disgust': cv2.imread("../../Datasets/Emojis/disgust.png"),
-}
+class EmotionRecognizer:
+    def __init__(self, emoji_paths):
+        self.emoji_paths = emoji_paths
+        self.emoji_icons = self._load_emojis()
+        self.detector = FER()
+        self.cap = cv2.VideoCapture(0)
+        self.blank_image = 255 * np.ones((200, 200, 3), dtype=np.uint8)
 
-def recognize_emotion(emotion):
-    """Recognize emotion and return image"""
-    return emoji_dict[emotion]
+    def _load_emojis(self):
+        emojis = {}
+        for expression_name, path in self.emoji_paths.items():
+            emoji = cv2.imread(path, cv2.IMREAD_UNCHANGED)
+            if emoji is not None:
+                # Convert BGRA to BGR if needed
+                if emoji.shape[2] == 4:
+                    emoji = cv2.cvtColor(emoji, cv2.COLOR_BGRA2BGR)
+                emojis[expression_name] = cv2.resize(emoji, (200, 200))
+            else:
+                print(f"Warning: Could not load emoji {path}")
+        return emojis
 
-# Start video capture from the webcam
-cap = cv2.VideoCapture(0)
+    def _get_emotion_emoji(self, emotion):
+        return self.emoji_icons.get(emotion, self.blank_image)
 
-while cap.isOpened():
-    # Read a frame from the webcam
-    ret, frame = cap.read()
-    if not ret:
-        break
+    def process_frame(self) -> Optional[EmotionResult]:
+        ret, frame = self.cap.read()
+        if not ret:
+            return None
 
-    # Detect emotions in the frame
-    emotion_data = detector.detect_emotions(frame)
+        # Detect emotions in the frame
+        emotion_data = self.detector.detect_emotions(frame)
 
-    if emotion_data:
-        # Process each detected face and find the dominant emotion
-        for face in emotion_data:
-            emotions = face["emotions"]
-            dominant_emotion = max(emotions, key=emotions.get)
+        # Default to neutral emoji if no emotions are detected
+        emoji_img = self.blank_image
 
-            emoji_img=recognize_emotion(dominant_emotion)
+        if emotion_data:
+            # Process each detected face and find the dominant emotion
+            for face in emotion_data:
+                emotions = face["emotions"]
+                dominant_emotion = max(emotions, key=emotions.get)
 
-            if emoji_img is not None:
-                cv2.imshow('Emoji', emoji_img)
+                # Get the corresponding emoji for the dominant emotion
+                emoji_img = self._get_emotion_emoji(dominant_emotion)
 
+                # Display the detected emotion on the frame
+                cv2.putText(frame, f"Emotion: {dominant_emotion}",
+                            (10, 50), cv2.FONT_HERSHEY_SIMPLEX, 1,
+                            (255, 255, 255), 2)
 
-    # Display the detected emotion on the frame
-    cv2.putText(frame, f"Emotion: {dominant_emotion}",
-                (10, 50), cv2.FONT_HERSHEY_SIMPLEX, 1,
-                (255, 255, 255), 2)
+        return EmotionResult(main_frame=frame, emoji=emoji_img)
 
-    # Display the frame with the detected emotion
-    cv2.imshow("Emotion Recognition", frame)
-
-    # Break the loop if 'q' is pressed
-    if cv2.waitKey(1) & 0xFF == ord('q'):
-        break
-
-# Release the webcam and close all OpenCV windows
-cap.release()
-cv2.destroyAllWindows()
+    def release(self):
+        self.cap.release()
+        cv2.destroyAllWindows()
