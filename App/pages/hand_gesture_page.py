@@ -12,9 +12,9 @@ from Algorithms.Body.hand_gesture_test import GestureRecognizer
 
 import cv2
 
-class HandGestureRecognitionPage(QWidget):
-    def __init__(self):
-        super().__init__()
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QHBoxLayout, QFrame
+from PyQt5.QtGui import QPixmap
+
         icon_paths = {
             'Thumb_Up': '../Datasets/HandIcons/thumbs_up.png',
             'Thumb_Down': '../Datasets/HandIcons/thumbs_down.png',
