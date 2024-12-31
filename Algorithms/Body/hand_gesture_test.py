@@ -50,7 +50,7 @@ class GestureRecognizer:
         return emoji_images[0], emoji_images[1]
 
     def _setup_recognizer(self):
-        base_options = python.BaseOptions(model_asset_path='../Algorithms/Body/gesture_recognizer.task')
+        base_options = python.BaseOptions(model_asset_path='Algorithms/Body/gesture_recognizer.task')
         options = vision.GestureRecognizerOptions(base_options=base_options, num_hands=2)
         return vision.GestureRecognizer.create_from_options(options)
 

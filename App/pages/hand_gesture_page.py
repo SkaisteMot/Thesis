@@ -16,13 +16,13 @@ class HandGestureRecognitionPage(QWidget):
     def __init__(self):
         super().__init__()
         icon_paths = {
-            'Thumb_Up': '../Datasets/HandIcons/thumbs_up.png',
-            'Thumb_Down': '../Datasets/HandIcons/thumbs_down.png',
-            'Pointing_Up': '../Datasets/HandIcons/point_up.png',
-            'Victory': '../Datasets/HandIcons/peace.png',
-            'Closed_Fist': '../Datasets/HandIcons/fist.png',
-            'Open_Palm': '../Datasets/HandIcons/wave.png',
-            'ILoveYou': '../Datasets/HandIcons/rock.png'
+            'Thumb_Up': 'Datasets/HandIcons/thumbs_up.png',
+            'Thumb_Down': 'Datasets/HandIcons/thumbs_down.png',
+            'Pointing_Up': 'Datasets/HandIcons/point_up.png',
+            'Victory': 'Datasets/HandIcons/peace.png',
+            'Closed_Fist': 'Datasets/HandIcons/fist.png',
+            'Open_Palm': 'Datasets/HandIcons/wave.png',
+            'ILoveYou': 'Datasets/HandIcons/rock.png'
         }
         self.gesture_recognizer = GestureRecognizer(icon_paths)
         self.setup_ui()

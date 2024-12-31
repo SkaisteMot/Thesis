@@ -15,13 +15,13 @@ class FacialExpressionRecognitionPage(QWidget):
     def __init__(self):
         super().__init__()
         emoji_paths = {
-            'happy': '../Datasets/Emojis/happy.png',
-            'sad': '../Datasets/Emojis/sad.png',
-            'angry': '../Datasets/Emojis/angry.png',
-            'surprise': '../Datasets/Emojis/surprised.png',
-            'fear': '../Datasets/Emojis/fear.png',
-            'neutral': '../Datasets/Emojis/neutral.png',
-            'disgust': '../Datasets/Emojis/disgust.png',
+            'happy': 'Datasets/Emojis/happy.png',
+            'sad': 'Datasets/Emojis/sad.png',
+            'angry': 'Datasets/Emojis/angry.png',
+            'surprise': 'Datasets/Emojis/surprised.png',
+            'fear': 'Datasets/Emojis/fear.png',
+            'neutral': 'Datasets/Emojis/neutral.png',
+            'disgust': 'Datasets/Emojis/disgust.png',
         }
 
         self.expression_recognizer = EmotionRecognizer(emoji_paths)

@@ -12,8 +12,8 @@ class HomePage(QMainWindow):  # Changed from QWidget to QMainWindow
         super().__init__()
 
         # Load the UI file
-        uic.loadUi("home_page.ui", self)  # Updated path to match your project structure
-        self.setWindowTitle("SensorFusion: Home")
+        uic.loadUi("App/home_page.ui", self)  # Updated path to match your project structure
+        self.setWindowTitle("Home")
 
         # Connect button signals to slots
         self.handGestureButton.clicked.connect(self.open_hand_gesture_page)

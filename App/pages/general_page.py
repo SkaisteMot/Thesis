@@ -18,7 +18,7 @@ class GeneralDemoPage(QWidget):
 
         self.algorithm = algorithm
         if self.algorithm == "colour":
-            self.recognizer = ColourRecognizer('../Datasets/colour_ranges.csv')
+            self.recognizer = ColourRecognizer('Datasets/colour_ranges.csv')
         elif self.algorithm == "object":
             self.recognizer = ObjectRecognizer('yolo11n.pt')
 
