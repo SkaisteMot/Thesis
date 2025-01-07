@@ -1,11 +1,11 @@
-# hand_gestures_test.py
+"""Hand Gesture Recogniziton using Googles MediaPipe, followed the documentation provided"""
+from dataclasses import dataclass
+from typing import Optional
 import cv2
 import mediapipe as mp
 import numpy as np
 from mediapipe.tasks import python
 from mediapipe.tasks.python import vision
-from dataclasses import dataclass
-from typing import Optional, Tuple
 
 @dataclass
 class GestureResult:
@@ -14,6 +14,7 @@ class GestureResult:
     right_emoji: np.ndarray
 
 class GestureRecognizer:
+    """Gesture Recognizer called by UI"""
     def __init__(self,icon_paths):
         self.icon_paths=icon_paths
         self.gesture_icons = self._load_icons()
@@ -50,11 +51,13 @@ class GestureRecognizer:
         return emoji_images[0], emoji_images[1]
 
     def _setup_recognizer(self):
-        base_options = python.BaseOptions(model_asset_path='Algorithms/Body/gesture_recognizer.task')
+        base_options = python.BaseOptions(model_asset_path=
+                                          'Algorithms/Body/gesture_recognizer.task')
         options = vision.GestureRecognizerOptions(base_options=base_options, num_hands=2)
         return vision.GestureRecognizer.create_from_options(options)
 
     def process_frame(self) -> Optional[GestureResult]:
+        """Process input and return relevent hand emojis"""
         ret, frame = self.cap.read()
         if not ret:
             return None

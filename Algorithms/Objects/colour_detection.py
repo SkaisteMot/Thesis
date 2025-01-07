@@ -9,10 +9,12 @@ import pandas as pd
 import numpy as np
 
 class ColourRecognizer:
+    """Colour Recognizer called by UI"""
     def __init__(self, colour_ranges_csv):
         self.colour_ranges = self.load_colour_ranges(colour_ranges_csv)
 
     def load_colour_ranges(self, csv_file):
+        """load predefined hsv colour range from csv file"""
         colour_data = pd.read_csv(csv_file)
         colours = {}
         for _, row in colour_data.iterrows():
@@ -23,14 +25,17 @@ class ColourRecognizer:
         return colours
 
     def create_mask(self, hsv_img, lower, upper):
+        """mask to only show colours in predefined ranges"""
         return cv2.inRange(hsv_img, lower, upper)
 
     def draw_bounding_box(self, image, contour, colour):
+        """draw boxes around detected colours"""
         x, y, w, h = cv2.boundingRect(contour)
         cv2.rectangle(image, (x, y), (x + w, y + h), (0, 0, 0), 2, lineType=cv2.LINE_AA)
         cv2.putText(image, colour, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2)
 
     def count_colours(self, image, contours, colour, min_area):
+        """count borders to check the amount for each colour"""
         colour_count = 0
         for contour in contours:
             area = cv2.contourArea(contour)
@@ -40,11 +45,14 @@ class ColourRecognizer:
         return colour_count
 
     def display_colour_counts(self, image, colour_counts):
+        """display the colour and its count """
         y_offset = 30
         for i, (colour, count) in enumerate(colour_counts.items()):
-            cv2.putText(image, f"{colour}: {count}", (10, y_offset + i * 20), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 0), 2)
+            cv2.putText(image, f"{colour}: {count}", (10, y_offset + i * 20),
+                         cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 0), 2)
 
     def detect_and_draw(self, image, min_area=300):
+        """Main can change min area depending on scene"""
         hsv_img = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
         colour_counts = {}
         for colour, (lower, upper) in self.colour_ranges.items():
