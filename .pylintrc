@@ -1,4 +1,6 @@
 ﻿[MAIN]
+# To get rid of App\main.py:3:0: E0401: Unable to import 'PyQt5.QtWidgets' (import-error)
+init-hook=import sys; sys.path.append(r'C:\Users\skais\ThesisProject\DevCode\.venv\Lib\site-packages')
 
 # Analyse import fallback blocks. This can be used to support both Python 2 and
 # 3 compatible code, which means that the block might have code that exists

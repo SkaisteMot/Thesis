@@ -1,14 +1,13 @@
 """page for hand gesture detection, opened from home_page.py button"""
 import sys
 import os
+import cv2
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QHBoxLayout
 from PyQt5.QtGui import QPixmap, QImage
 from PyQt5.QtCore import QTimer, Qt
 
 sys.path.append(os.path.abspath("C:\\Users\\skais\\ThesisProject\\DevCode"))
 from Algorithms.Body.hand_gesture_test import GestureRecognizer
-
-import cv2
 
 class HandGestureRecognitionPage(QWidget):
     """Hand gesture recognizer"""
@@ -70,7 +69,7 @@ class HandGestureRecognitionPage(QWidget):
         self.setLayout(main_layout)
 
     def update_frame(self):
-        """update"""
+        """update the video feed and hand gesture icons"""
         result = self.gesture_recognizer.process_frame()
         if result:
             self.video_feed.setPixmap(self._convert_cv_to_qt(result.main_frame))
@@ -78,7 +77,7 @@ class HandGestureRecognitionPage(QWidget):
             self.right_emoji.setPixmap(self._convert_cv_to_qt(result.right_emoji))
 
     def _convert_cv_to_qt(self, cv_img):
-        """cv2 stream for qt"""
+        """convert cv2 img to qpixmap for display in qlabel"""
         if cv_img is None:
             return QPixmap()
         if len(cv_img.shape) == 2:  # Grayscale
@@ -92,5 +91,6 @@ class HandGestureRecognitionPage(QWidget):
 
 
     def close_event(self, event):
+        """handle close event to release resources"""
         self.gesture_recognizer.release()
         event.accept()

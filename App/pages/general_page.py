@@ -2,13 +2,14 @@
 # Add the DevCode directory to the Python path
 import sys
 import os
-sys.path.append(os.path.abspath("C:\\Users\\skais\\ThesisProject\\DevCode"))
-from Algorithms.Objects.colour_detection import ColourRecognizer
-from Algorithms.Objects.object_detection import ObjectRecognizer
+import cv2
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QHBoxLayout
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPixmap, QImage
-import cv2
+
+sys.path.append(os.path.abspath("C:\\Users\\skais\\ThesisProject\\DevCode"))
+from Algorithms.Objects.colour_detection import ColourRecognizer
+from Algorithms.Objects.object_detection import ObjectRecognizer
 
 class GeneralDemoPage(QWidget):
     """page used for general display of streams"""
@@ -66,7 +67,7 @@ class GeneralDemoPage(QWidget):
         self.timer = self.startTimer(20)
 
     def timer_event(self):
-        """if no frames received,close window"""
+        """handle timer event for capturing and processing frames"""
         ret, frame = self.cap.read()
         if not ret:
             self.failed_frames += 1
@@ -96,6 +97,7 @@ class GeneralDemoPage(QWidget):
         self.video_label.setPixmap(pixmap)
 
     def close_event(self, event):
+        """handle close event to release resources"""
         # Release the video capture and stop the algorithm
         if hasattr(self, 'cap') and self.cap.isOpened():
             self.cap.release()

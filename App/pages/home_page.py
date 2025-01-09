@@ -4,6 +4,7 @@ from PyQt5.QtWidgets import QMainWindow
 from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtGui import QPixmap, QPainter, QColor
 from PyQt5 import uic
+
 from .hand_gesture_page import HandGestureRecognitionPage
 from .facial_expression_page import FacialExpressionRecognitionPage
 from .general_page import GeneralDemoPage
@@ -16,6 +17,12 @@ class HomePage(QMainWindow):
         # Load the UI file
         uic.loadUi("App/home_page.ui", self)
         self.setWindowTitle("Home")
+
+        #Init buttons for linting W0201
+        self.hand_gesture_page=None
+        self.facial_expression_page=None
+        self.colour_detection_page=None
+        self.object_detection_page=None
 
         # Connect button signals to slots
         self.handGestureButton.clicked.connect(self.open_hand_gesture_page)
@@ -68,7 +75,7 @@ class HomePage(QMainWindow):
     def is_device_connected(self, device_name):
         """Check if a device is connected by its name."""
         wmi = win32com.client.GetObject("winmgmts:\\\\.\\root\\cimv2")
-        query = "SELECT * FROM Win32_PnPEntity WHERE DeviceID LIKE '%{}%'".format(device_name)
+        query = f"SELECT * FROM Win32_PnPEntity WHERE DeviceID LIKE '%{device_name}%'"
         devices = wmi.ExecQuery(query)
         return any(device.DeviceID for device in devices)
 
