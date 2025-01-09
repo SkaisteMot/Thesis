@@ -41,6 +41,14 @@ class HomePage(QMainWindow):
         self.connection_timer.timeout.connect(self.update_connection_status)
         self.connection_timer.start(2000)  # Check every 2 seconds
 
+        self.load_stylesheet()
+
+    def load_stylesheet(self):
+        """Load the stylesheet for the page."""
+        with open("App/styles/base.qss", "r") as file:
+            stylesheet = file.read()
+            self.setStyleSheet(stylesheet)
+
     def draw_circle(self, color, size=20):
         """Draw a circle with the specified color and size."""
         pixmap = QPixmap(size, size)

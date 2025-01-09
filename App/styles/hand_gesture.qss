@@ -1,0 +1,28 @@
+QWidget {
+    background-color: #f0f0f0;
+    font-family: Arial, sans-serif;
+}
+
+#label {
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+    color:black;
+}
+
+#emoji {
+    border: 2px solid black;
+    border-radius: 10px;
+    background-color: white;
+    width: 200px;
+    height: 200px;
+    margin: 10px
+}
+
+#video_feed {
+    border: 2px solid black;
+    border-radius: 10px;
+    background-color: black;
+    width: 640px;
+    height: 480px;
+}
