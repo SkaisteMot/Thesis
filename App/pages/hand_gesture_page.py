@@ -1,13 +1,11 @@
 """page for hand gesture detection, opened from home_page.py button"""
-import sys
-import os
 import cv2
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QHBoxLayout
 from PyQt5.QtGui import QPixmap, QImage
 from PyQt5.QtCore import QTimer, Qt
 
-sys.path.append(os.path.abspath("C:\\Users\\skais\\ThesisProject\\DevCode"))
 from Algorithms.Body.hand_gesture_test import GestureRecognizer
+from utils import load_stylesheet,close_event
 
 class HandGestureRecognitionPage(QWidget):
     """Hand gesture recognizer"""
@@ -29,7 +27,7 @@ class HandGestureRecognitionPage(QWidget):
         self.timer.timeout.connect(self.update_frame)
         self.timer.start(30)
 
-        self.load_stylesheet()
+        load_stylesheet(self,'App/styles/hand_gesture.qss')
 
     def setup_ui(self):
         """UI for hand page setup"""
@@ -72,12 +70,6 @@ class HandGestureRecognitionPage(QWidget):
         main_layout.addLayout(right_layout)
         self.setLayout(main_layout)
 
-    def load_stylesheet(self):
-        """Load the stylesheet for the page."""
-        with open("App/styles/hand_gesture.qss", "r") as file:
-            stylesheet = file.read()
-            self.setStyleSheet(stylesheet)
-
     def update_frame(self):
         """update the video feed and hand gesture icons"""
         result = self.gesture_recognizer.process_frame()
@@ -100,7 +92,6 @@ class HandGestureRecognitionPage(QWidget):
         return QPixmap.fromImage(qt_image)
 
 
-    def close_event(self, event):
+    def call_close_event(self, event):
         """handle close event to release resources"""
-        self.gesture_recognizer.release()
-        event.accept()
+        close_event(event,self)

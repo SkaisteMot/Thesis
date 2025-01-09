@@ -5,10 +5,10 @@ from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtGui import QPixmap, QPainter, QColor
 from PyQt5 import uic
 
-from .hand_gesture_page import HandGestureRecognitionPage
-from .facial_expression_page import FacialExpressionRecognitionPage
-from .general_page import GeneralDemoPage
-
+from App.pages.hand_gesture_page import HandGestureRecognitionPage
+from App.pages.facial_expression_page import FacialExpressionRecognitionPage
+from App.pages.general_page import GeneralDemoPage
+from utils import load_stylesheet
 class HomePage(QMainWindow):
     """Home page called from main.py"""
     def __init__(self):
@@ -41,13 +41,7 @@ class HomePage(QMainWindow):
         self.connection_timer.timeout.connect(self.update_connection_status)
         self.connection_timer.start(2000)  # Check every 2 seconds
 
-        self.load_stylesheet()
-
-    def load_stylesheet(self):
-        """Load the stylesheet for the page."""
-        with open("App/styles/base.qss", "r") as file:
-            stylesheet = file.read()
-            self.setStyleSheet(stylesheet)
+        load_stylesheet(self,'App/styles/base.qss')
 
     def draw_circle(self, color, size=20):
         """Draw a circle with the specified color and size."""

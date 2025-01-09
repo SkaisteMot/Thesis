@@ -1,13 +1,11 @@
 """Facial expression page opened from home_Page.ui"""
-import sys
-import os
 import cv2
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QHBoxLayout
 from PyQt5.QtGui import QPixmap, QImage
 from PyQt5.QtCore import  QTimer, Qt
 
-sys.path.append(os.path.abspath("C:\\Users\\skais\\ThesisProject\\DevCode"))
 from Algorithms.Body.emotion_recognition import EmotionRecognizer
+from utils import load_stylesheet, close_event
 
 class FacialExpressionRecognitionPage(QWidget):
     """Emotion Recognition"""
@@ -30,7 +28,7 @@ class FacialExpressionRecognitionPage(QWidget):
         self.timer.timeout.connect(self.update_frame)
         self.timer.start(30)
 
-        self.load_stylesheet()
+        load_stylesheet(self,'App/styles/facial_expression.qss')
 
     def setup_ui(self):
         """setup face expression page ui"""
@@ -63,12 +61,6 @@ class FacialExpressionRecognitionPage(QWidget):
         main_layout.addLayout(right_layout)
         self.setLayout(main_layout)
 
-    def load_stylesheet(self):
-        """Load the stylesheet for the page."""
-        with open("App/styles/facial_expression.qss", "r") as file:
-            stylesheet = file.read()
-            self.setStyleSheet(stylesheet)
-
     def update_frame(self):
         """update frames from video stream and detected emotion"""
         result = self.expression_recognizer.process_frame()
@@ -89,7 +81,6 @@ class FacialExpressionRecognitionPage(QWidget):
             qt_image = QImage(rgb_image.data, w, h, ch * w, QImage.Format_RGB888)
         return QPixmap.fromImage(qt_image)
 
-    def close_event(self, event):
+    def call_close_event(self, event):
         """handle close event to release resources"""
-        self.expression_recognizer.release()
-        event.accept()
+        close_event(event,self)

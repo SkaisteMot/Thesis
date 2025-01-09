@@ -1,15 +1,13 @@
 """Page that is used when only a stream is outputted, object detection, colour detection etc"""
-# Add the DevCode directory to the Python path
+from os import close
 import sys
-import os
 import cv2
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QHBoxLayout
-from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPixmap, QImage
 
-sys.path.append(os.path.abspath("C:\\Users\\skais\\ThesisProject\\DevCode"))
 from Algorithms.Objects.colour_detection import ColourRecognizer
 from Algorithms.Objects.object_detection import ObjectRecognizer
+from utils import load_stylesheet,close_event
 
 class GeneralDemoPage(QWidget):
     """page used for general display of streams"""
@@ -51,7 +49,7 @@ class GeneralDemoPage(QWidget):
         # Set the main layout
         self.setLayout(main_layout)
 
-        self.load_stylesheet()
+        load_stylesheet(self,'App\styles\general.qss')
 
         # Start video capture
         self.cap = cv2.VideoCapture(0)
@@ -61,12 +59,6 @@ class GeneralDemoPage(QWidget):
 
         self.failed_frames = 0  # Counter for consecutive failed frames
         self.timer = self.startTimer(20)
-
-    def load_stylesheet(self):
-        """load stylesheet"""
-        with open("App\styles\general.qss","r") as file:
-            stylesheet=file.read()
-            self.setStyleSheet(stylesheet)
 
     def timer_event(self):
         """handle timer event for capturing and processing frames"""
@@ -98,16 +90,6 @@ class GeneralDemoPage(QWidget):
         pixmap = QPixmap.fromImage(qimg)
         self.video_label.setPixmap(pixmap)
 
-    def close_event(self, event):
+    def call_close_event(self, event):
         """handle close event to release resources"""
-        # Release the video capture and stop the algorithm
-        if hasattr(self, 'cap') and self.cap.isOpened():
-            self.cap.release()
-
-        print("Video stream and resources have been released.")
-
-        # Stop the timer
-        self.killTimer(self.timer)
-
-        # Accept the close event
-        event.accept()
+        close_event(event,self)
