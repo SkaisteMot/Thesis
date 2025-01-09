@@ -31,6 +31,8 @@ class FacialExpressionRecognitionPage(QWidget):
         self.timer.timeout.connect(self.update_frame)
         self.timer.start(30)
 
+        self.load_stylesheet()
+
     def setup_ui(self):
         self.setWindowTitle("Facial Expression Recognition")
         self.setGeometry(100, 100, 800, 600)
@@ -40,7 +42,7 @@ class FacialExpressionRecognitionPage(QWidget):
         # Left panel for the video feed
         left_layout = QVBoxLayout()
         self.video_feed = QLabel()
-        self.video_feed.setFixedSize(400, 400)
+        self.video_feed.setObjectName("video_feed")
         self.video_feed.setScaledContents(True)
         left_layout.addWidget(self.video_feed)
         left_layout.addStretch()
@@ -48,8 +50,9 @@ class FacialExpressionRecognitionPage(QWidget):
         # Right panel for emoji display
         right_layout = QVBoxLayout()
         self.emoji_label = QLabel("Expression:")
+        self.emoji_label.setObjectName("emoji_label")
         self.face_emoji = QLabel()
-        self.face_emoji.setFixedSize(200, 200)
+        self.face_emoji.setObjectName("emoji_img")
         self.face_emoji.setScaledContents(True)
         self.face_emoji.setAlignment(Qt.AlignCenter)
         right_layout.addWidget(self.emoji_label)
@@ -59,6 +62,12 @@ class FacialExpressionRecognitionPage(QWidget):
         main_layout.addLayout(left_layout)
         main_layout.addLayout(right_layout)
         self.setLayout(main_layout)
+
+    def load_stylesheet(self):
+        """Load the stylesheet for the page."""
+        with open("App/styles/facial_expression.qss", "r") as file:
+            stylesheet = file.read()
+            self.setStyleSheet(stylesheet)
 
     def update_frame(self):
         result = self.expression_recognizer.process_frame()

@@ -25,10 +25,9 @@ class GeneralDemoPage(QWidget):
         # Main layout (horizontal layout for video right panel)
         main_layout = QHBoxLayout(self)
 
-        # Video Stream Section (Left) - Change QFrame to QLabel
+        # Video Stream Section (Left)
         self.video_label = QLabel()
-        self.video_label.setStyleSheet("background-color: black;")
-        self.video_label.setMinimumSize(400, 300)  # Minimum size for the video area
+        self.video_label.setObjectName("video_label")
         main_layout.addWidget(self.video_label, stretch=3)
 
         # Right Panel (Output and Description)
@@ -36,17 +35,12 @@ class GeneralDemoPage(QWidget):
 
         # Output Section (Top of Right Panel)
         self.output_label = QLabel("Output Here")
-        self.output_label.setStyleSheet(
-            "background-color: lightgray; font-size: 16px; padding: 10px;"
-        )
-        self.output_label.setAlignment(Qt.AlignCenter)
-        self.output_label.setFixedHeight(150)  # Optional: Adjust height as needed
+        self.output_label.setObjectName("output_label")
         right_panel.addWidget(self.output_label, stretch=1)
 
         # Description Section (Bottom of Right Panel)
         self.description_label = QLabel(description)
-        self.description_label.setStyleSheet("font-size: 18px; color: gray;")
-        self.description_label.setAlignment(Qt.AlignLeft | Qt.AlignTop)
+        self.description_label.setObjectName("description_label")
         self.description_label.setWordWrap(True)
         right_panel.addWidget(self.description_label, stretch=2)
 
@@ -56,6 +50,8 @@ class GeneralDemoPage(QWidget):
         # Set the main layout
         self.setLayout(main_layout)
 
+        self.load_stylesheet()
+
         # Start video capture
         self.cap = cv2.VideoCapture(0)
         if not self.cap.isOpened():
@@ -64,6 +60,12 @@ class GeneralDemoPage(QWidget):
 
         self.failed_frames = 0  # Counter for consecutive failed frames
         self.timer = self.startTimer(20)
+
+    def load_stylesheet(self):
+        """load stylesheet"""
+        with open("App\styles\general.qss","r") as file:
+            stylesheet=file.read()
+            self.setStyleSheet(stylesheet)
 
     def timerEvent(self, event):
         ret, frame = self.cap.read()

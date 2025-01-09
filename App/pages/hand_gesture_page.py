@@ -31,6 +31,8 @@ class HandGestureRecognitionPage(QWidget):
         self.timer.timeout.connect(self.update_frame)
         self.timer.start(30)
 
+        self.load_stylesheet()
+
     def setup_ui(self):
         self.setWindowTitle("Hand Gesture Recognition")
         self.setGeometry(100, 100, 1200, 600)
@@ -40,8 +42,9 @@ class HandGestureRecognitionPage(QWidget):
         # Left panel
         left_layout = QVBoxLayout()
         self.left_label = QLabel("Left Hand:")
+        self.left_label.setObjectName("label")
         self.left_emoji = QLabel()
-        self.left_emoji.setFixedSize(200, 200)
+        self.left_emoji.setObjectName("emoji")
         self.left_emoji.setScaledContents(True)
         self.left_emoji.setAlignment(Qt.AlignCenter)
         left_layout.addWidget(self.left_label)
@@ -50,14 +53,15 @@ class HandGestureRecognitionPage(QWidget):
 
         # Center video feed
         self.video_feed = QLabel()
-        self.video_feed.setFixedSize(640, 480)
+        self.video_feed.setObjectName("video_feed")
         self.video_feed.setScaledContents(True)
 
         # Right panel
         right_layout = QVBoxLayout()
         self.right_label = QLabel("Right Hand:")
+        self.right_label.setObjectName("label")
         self.right_emoji = QLabel()
-        self.right_emoji.setFixedSize(200, 200)
+        self.right_emoji.setObjectName("emoji")
         self.right_emoji.setScaledContents(True)
         self.right_emoji.setAlignment(Qt.AlignCenter)
         right_layout.addWidget(self.right_label)
@@ -68,6 +72,12 @@ class HandGestureRecognitionPage(QWidget):
         main_layout.addWidget(self.video_feed)
         main_layout.addLayout(right_layout)
         self.setLayout(main_layout)
+
+    def load_stylesheet(self):
+        """Load the stylesheet for the page."""
+        with open("App/styles/hand_gesture.qss", "r") as file:
+            stylesheet = file.read()
+            self.setStyleSheet(stylesheet)
 
     def update_frame(self):
         result = self.gesture_recognizer.process_frame()
