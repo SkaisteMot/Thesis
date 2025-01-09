@@ -1,17 +1,18 @@
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QHBoxLayout
-from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QPixmap, QImage
+"""Page that is used when only a stream is outputted, object detection, colour detection etc"""
+# Add the DevCode directory to the Python path
 import sys
 import os
 import cv2
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QHBoxLayout
+from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QPixmap, QImage
 
-# Add the DevCode directory to the Python path
 sys.path.append(os.path.abspath("C:\\Users\\skais\\ThesisProject\\DevCode"))
 from Algorithms.Objects.colour_detection import ColourRecognizer
 from Algorithms.Objects.object_detection import ObjectRecognizer
 
-
 class GeneralDemoPage(QWidget):
+    """page used for general display of streams"""
     def __init__(self, title: str, description: str, algorithm: str):
         super().__init__()
         self.setWindowTitle(title)
@@ -67,7 +68,8 @@ class GeneralDemoPage(QWidget):
             stylesheet=file.read()
             self.setStyleSheet(stylesheet)
 
-    def timerEvent(self, event):
+    def timer_event(self):
+        """handle timer event for capturing and processing frames"""
         ret, frame = self.cap.read()
         if not ret:
             self.failed_frames += 1
@@ -88,7 +90,7 @@ class GeneralDemoPage(QWidget):
             processed_frame = self.recognizer.detect_and_draw(frame)
 
         # Convert processed frame to QImage
-        height, width, channel = processed_frame.shape
+        height, width = processed_frame.shape
         bytes_per_line = 3 * width
         qimg = QImage(processed_frame.data, width, height, bytes_per_line, QImage.Format_BGR888)
 
@@ -96,7 +98,8 @@ class GeneralDemoPage(QWidget):
         pixmap = QPixmap.fromImage(qimg)
         self.video_label.setPixmap(pixmap)
 
-    def closeEvent(self, event):
+    def close_event(self, event):
+        """handle close event to release resources"""
         # Release the video capture and stop the algorithm
         if hasattr(self, 'cap') and self.cap.isOpened():
             self.cap.release()
