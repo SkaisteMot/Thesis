@@ -1,8 +1,9 @@
+"""Emotion Recogntion, display relevent emoji in seperate window"""
+from dataclasses import dataclass
+from typing import Optional
 import cv2
 import numpy as np
 from fer import FER
-from dataclasses import dataclass
-from typing import Optional
 
 @dataclass
 class EmotionResult:
@@ -10,6 +11,9 @@ class EmotionResult:
     emoji: np.ndarray
 
 class EmotionRecognizer:
+    """
+    Emotion recognizer class called by the ui
+    """
     def __init__(self, emoji_paths):
         self.emoji_paths = emoji_paths
         self.emoji_icons = self._load_emojis()
@@ -34,6 +38,7 @@ class EmotionRecognizer:
         return self.emoji_icons.get(emotion, self.blank_image)
 
     def process_frame(self) -> Optional[EmotionResult]:
+        """Process the input and output the relevant emoji"""
         ret, frame = self.cap.read()
         if not ret:
             return None

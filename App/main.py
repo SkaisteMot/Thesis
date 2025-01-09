@@ -1,3 +1,4 @@
+"""main file to start desktop application"""
 import sys
 from PyQt5.QtWidgets import QApplication
 from pages.home_page import HomePage

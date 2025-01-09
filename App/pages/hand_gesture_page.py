@@ -1,18 +1,16 @@
-# hand_gesture_page.py
+"""page for hand gesture detection, opened from home_page.py button"""
+import sys
+import os
+import cv2
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QHBoxLayout
 from PyQt5.QtGui import QPixmap, QImage
 from PyQt5.QtCore import QTimer, Qt
 
-import sys
-import os
-
-# Add the DevCode directory to the Python path
 sys.path.append(os.path.abspath("C:\\Users\\skais\\ThesisProject\\DevCode"))
 from Algorithms.Body.hand_gesture_test import GestureRecognizer
 
-import cv2
-
 class HandGestureRecognitionPage(QWidget):
+    """Hand gesture recognizer"""
     def __init__(self):
         super().__init__()
         icon_paths = {
@@ -32,6 +30,7 @@ class HandGestureRecognitionPage(QWidget):
         self.timer.start(30)
 
     def setup_ui(self):
+        """UI for hand page setup"""
         self.setWindowTitle("Hand Gesture Recognition")
         self.setGeometry(100, 100, 1200, 600)
 
@@ -70,6 +69,7 @@ class HandGestureRecognitionPage(QWidget):
         self.setLayout(main_layout)
 
     def update_frame(self):
+        """update the video feed and hand gesture icons"""
         result = self.gesture_recognizer.process_frame()
         if result:
             self.video_feed.setPixmap(self._convert_cv_to_qt(result.main_frame))
@@ -77,6 +77,7 @@ class HandGestureRecognitionPage(QWidget):
             self.right_emoji.setPixmap(self._convert_cv_to_qt(result.right_emoji))
 
     def _convert_cv_to_qt(self, cv_img):
+        """convert cv2 img to qpixmap for display in qlabel"""
         if cv_img is None:
             return QPixmap()
         if len(cv_img.shape) == 2:  # Grayscale
@@ -89,19 +90,7 @@ class HandGestureRecognitionPage(QWidget):
         return QPixmap.fromImage(qt_image)
 
 
-    def closeEvent(self, event):
+    def close_event(self, event):
+        """handle close event to release resources"""
         self.gesture_recognizer.release()
         event.accept()
-"""
-def main():
-    from PyQt5.QtWidgets import QApplication
-    import sys
-
-    app = QApplication(sys.argv)
-    window = HandGestureRecognitionPage()
-    window.show()
-    sys.exit(app.exec_())
-
-if __name__ == '__main__':
-    main()
-    """
