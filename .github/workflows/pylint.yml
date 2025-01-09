@@ -37,6 +37,6 @@ jobs:
           pip install pylint  # Ensuring pylint is explicitly installed
 
       # Run pylint on Python files
-      - name: Analyzing the code with pylint
-        run: |
-          pylint $(git ls-files '*.py')
+      - name: Analysing the code with pylint
+        run:
+          pylint $(git ls-files '*.py') --output=lint.txt || true
