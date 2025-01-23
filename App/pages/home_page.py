@@ -33,6 +33,15 @@ class HomePage(QMainWindow):
         self.thermalButton.clicked.connect(self.open_thermal_page)
         self.eventButton.clicked.connect(self.open_counting_page)
 
+        #Button Tooltips
+        self.handGestureButton.setToolTip("Recognize hand signs and display equivalent emoji")
+        self.facialExpressionButton.setToolTip("Detect facial emotions")
+        self.colourButton.setToolTip("Detect the colours in a frame")
+        self.objectButton.setToolTip("Detect objects in a frame")
+        self.lidarButton.setToolTip("LiDAR point cloud")
+        self.thermalButton.setToolTip("Demonstrate the temperatures in a frame")
+        self.eventButton.setToolTip("Detect only movement in a frame")
+
         # Initialize status indicators
         self.set_status_to_searching()
 
@@ -41,7 +50,7 @@ class HomePage(QMainWindow):
         self.connection_timer.timeout.connect(self.update_connection_status)
         self.connection_timer.start(2000)  # Check every 2 seconds
 
-        load_stylesheet(self,'App/styles/base.qss')
+        load_stylesheet(self,'App/styles/home.qss')
 
     def draw_circle(self, color, size=20):
         """Draw a circle with the specified color and size."""
