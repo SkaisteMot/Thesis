@@ -22,3 +22,16 @@ QPushButton:hover {
 QPushButton:pressed {
     background-color: #800942;
 }
+
+/* Style for QMessageBox buttons */
+QMessageBox QPushButton {
+    background-color: grey;
+    color: white;
+    border-radius: 1px;
+    padding: 6px 12px;
+    font-weight: normal;
+}
+
+QMessageBox QPushButton:hover {
+    background-color: darkgrey;
+}
