@@ -1,6 +1,7 @@
 """Application Home page, contains general description and buttons that lead to relevant algs"""
+from tkinter import NO
 import win32com.client
-from PyQt5.QtWidgets import QMainWindow
+from PyQt5.QtWidgets import QMainWindow, QApplication, QMessageBox
 from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtGui import QPixmap, QPainter, QColor
 from PyQt5 import uic
@@ -9,6 +10,7 @@ from App.pages.hand_gesture_page import HandGestureRecognitionPage
 from App.pages.facial_expression_page import FacialExpressionRecognitionPage
 from App.pages.general_page import GeneralDemoPage
 from utils import load_stylesheet
+
 class HomePage(QMainWindow):
     """Home page called from main.py"""
     def __init__(self):
@@ -93,36 +95,72 @@ class HomePage(QMainWindow):
     # Page opening handlers
     def open_hand_gesture_page(self):
         """show and run hand gesture page/alg"""
+        self.close_other_pages()
         self.hand_gesture_page = HandGestureRecognitionPage()
         self.hand_gesture_page.show()
 
     def open_facial_expression_page(self):
         """show and run face/emotion expression page/alg"""
+        self.close_other_pages()
         self.facial_expression_page = FacialExpressionRecognitionPage()
         self.facial_expression_page.show()
 
     def open_object_detection_page(self):
         """show and run object detection page/alg, pass in title and description"""
-        self.object_detection_page = GeneralDemoPage("Object Detection",
-                                                      "dummy description",
-                                                        "object")
+        self.close_other_pages()
+        self.object_detection_page = GeneralDemoPage("object")
         self.object_detection_page.show()
 
     def open_colour_detection_page(self):
         """show and run colour detection page/alg, pass in title and description"""
-        self.colour_detection_page = GeneralDemoPage("Colour Detection",
-                                                      "dummy description",
-                                                        "colour")
+        self.close_other_pages()
+        self.colour_detection_page = GeneralDemoPage("colour")
         self.colour_detection_page.show()
 
     def open_lidar_page(self):
         """show and run lidar page"""
+        self.close_other_pages()
         print("LiDAR demo selected.")
 
     def open_thermal_page(self):
         """show and run thermal page"""
+        self.close_other_pages()
         print("Thermal demo selected.")
 
     def open_counting_page(self):
         """show and run event camera high speed counting page/alg"""
+        self.close_other_pages()
         print("Event Camera Counting demo selected.")
+
+    def close_other_pages(self):
+        """"close all other pages before opening another"""
+        if self.hand_gesture_page:
+            self.hand_gesture_page.close()
+            self.hand_gesture_page=None
+        if self.facial_expression_page:
+            self.facial_expression_page.close()
+            self.facial_expression_page=None
+        if self.colour_detection_page:
+            self.colour_detection_page.close()
+            self.colour_detection_page=None
+        if self.object_detection_page:
+            self.object_detection_page.close()
+            self.object_detection_page=None
+
+    def closeEvent(self, event):
+        """
+        Popup to confirm exiting of app,
+        Ensure the entire application closes when the home page is closed.
+        """
+        reply=QMessageBox.question(
+            self,
+            "Exit Application",
+            "Are you sure you wish to close the application?",
+            QMessageBox.Yes | QMessageBox.No,
+            QMessageBox.No
+        )
+        if reply == QMessageBox.Yes:
+            event.accept()
+            QApplication.quit()
+        else:
+            event.ignore()

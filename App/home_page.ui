@@ -127,19 +127,22 @@
    <widget class="QLabel" name="description">
     <property name="geometry">
      <rect>
-      <x>140</x>
+      <x>130</x>
       <y>400</y>
-      <width>1190</width>
+      <width>1100</width>
       <height>470</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <pointsize>14</pointsize>
+      <pointsize>16</pointsize>
      </font>
     </property>
     <property name="text">
-     <string>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas commodo, est et tristique euismod, augue nulla porttitor tortor, sed convallis arcu eros tristique nulla. Vestibulum vel faucibus urna, malesuada congue mauris. Quisque pharetra hendrerit mauris id dapibus. Pellentesque purus lorem, sagittis sit amet imperdiet elementum, facilisis eu enim. Morbi id lectus posuere nisl tempor ullamcorper at eu tortor. Mauris nec sem eu felis consequat lobortis eu et nibh. Suspendisse sit amet pretium ante, nec ornare elit.</string>
+     <string>This is a multi-sensor demonstration application that integrates an RGB camera, Event camera, LiDAR and Thermal camera to showcase their functionality and unique capabilities. It also includes recognition algorithms for the RGB camera, allowing for real-time detection and analysis of objects, gestures and facial expressions.
+
+Click on a button to start exploring and enjoy the learning experience!
+</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>

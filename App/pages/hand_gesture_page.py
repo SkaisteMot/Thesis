@@ -38,7 +38,7 @@ class HandGestureRecognitionPage(QWidget):
 
         # Left panel
         left_layout = QVBoxLayout()
-        self.left_label = QLabel("Left Hand:")
+        self.left_label = QLabel("Hand 1:")
         self.left_label.setObjectName("label")
         self.left_emoji = QLabel()
         self.left_emoji.setObjectName("emoji")
@@ -55,7 +55,7 @@ class HandGestureRecognitionPage(QWidget):
 
         # Right panel
         right_layout = QVBoxLayout()
-        self.right_label = QLabel("Right Hand:")
+        self.right_label = QLabel("Hand 2:")
         self.right_label.setObjectName("label")
         self.right_emoji = QLabel()
         self.right_emoji.setObjectName("emoji")

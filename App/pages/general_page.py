@@ -11,15 +11,32 @@ from utils import load_stylesheet,close_event
 
 class GeneralDemoPage(QWidget):
     """page used for general display of streams"""
-    def __init__(self, title: str, description: str, algorithm: str):
+    def __init__(self, algorithm: str):
         super().__init__()
-        self.setWindowTitle(title)
 
         self.algorithm = algorithm
         if self.algorithm == "colour":
+            self.setWindowTitle("Colour Detection")
             self.recognizer = ColourRecognizer('Datasets/colour_ranges.csv')
+            instructions="Hold up one of the following colours:"
+            description=("The program detects colours in an image using predefined colour ranges. It"
+                            "first creates a mask to highlight areas that match each colour. Then, it"
+                            "finds the boundaries of these colour regions and draws outlines around them,"
+                            "making it easy to identify and count different colours in the video.")
+
         elif self.algorithm == "object":
+            self.setWindowTitle("Object Detection")
+            instructions="Hold up an object to detect and classify"
             self.recognizer = ObjectRecognizer('yolo11n.pt')
+            description = ("YOLO is a fast object detection system that processes an image by dividing "
+              "it into a grid. Each grid cell predicts whether an object is present and, "
+              "if so, draws a box around it. The image passes through multiple layers of a "
+              "neural network, where early layers detect simple features like edges, while "
+              "deeper layers recognize complex patterns and object shapes. Each grid cell "
+              "outputs bounding boxes, confidence scores (how sure the model is about "
+              "the detection), and class labels. This allows YOLO to quickly "
+              "and accurately detect multiple objects in an image.")
+
 
         # Main layout (horizontal layout for video right panel)
         main_layout = QHBoxLayout(self)
@@ -33,7 +50,7 @@ class GeneralDemoPage(QWidget):
         right_panel = QVBoxLayout()
 
         # Output Section (Top of Right Panel)
-        self.output_label = QLabel("Output Here")
+        self.output_label = QLabel(instructions)
         self.output_label.setObjectName("output_label")
         right_panel.addWidget(self.output_label, stretch=1)
 

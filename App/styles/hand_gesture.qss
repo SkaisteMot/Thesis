@@ -12,7 +12,7 @@ QWidget {
 
 #emoji {
     border: 2px solid black;
-    border-radius: 10px;
+    border-radius: 0px;
     background-color: white;
     width: 200px;
     height: 200px;
@@ -21,7 +21,7 @@ QWidget {
 
 #video_feed {
     border: 2px solid black;
-    border-radius: 10px;
+    border-radius: 0px;
     background-color: black;
     width: 640px;
     height: 480px;
