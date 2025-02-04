@@ -2,7 +2,7 @@ import cv2
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel
 from PyQt5.QtGui import QPixmap, QImage
 from PyQt5.QtCore import QTimer, Qt
-from utils import load_stylesheet, close_event  # Reuse close event
+from utils import load_stylesheet, close_event
 
 class ThermalCameraPage(QWidget):
     """Thermal Camera Streaming Page"""

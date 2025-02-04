@@ -1,15 +1,17 @@
 """Application Home page, contains general description and buttons that lead to relevant algs"""
-from tkinter import NO
 import win32com.client
 from PyQt5.QtWidgets import QMainWindow, QApplication, QMessageBox
 from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtGui import QPixmap, QPainter, QColor
 from PyQt5 import uic
+import subprocess
 
 from App.pages.hand_gesture_page import HandGestureRecognitionPage
 from App.pages.facial_expression_page import FacialExpressionRecognitionPage
 from App.pages.general_page import GeneralDemoPage
+from App.pages.thermalTest import ThermalCameraPage
 from utils import load_stylesheet
+
 
 class HomePage(QMainWindow):
     """Home page called from main.py"""
@@ -34,6 +36,7 @@ class HomePage(QMainWindow):
         self.lidarButton.clicked.connect(self.open_lidar_page)
         self.thermalButton.clicked.connect(self.open_thermal_page)
         self.eventButton.clicked.connect(self.open_counting_page)
+
 
         #Button Tooltips
         self.handGestureButton.setToolTip("Recognize hand signs and display equivalent emoji")
@@ -67,10 +70,10 @@ class HomePage(QMainWindow):
 
     def update_connection_status(self):
         """Check actual connection status for devices."""
-        rgb_connected = self.is_device_connected("HXC32A99K_V2")
-        lidar_connected = self.is_device_connected("HXC32A99K_V2")
-        thermal_connected = self.is_device_connected("notconnectedNonesense")
-        event_connected = self.is_device_connected("notconnectedNonesense")
+        rgb_connected = self.is_device_connected("169.254.186.74")
+        lidar_connected = self.is_device_connected("169.254.65.122")
+        thermal_connected = self.is_device_connected("192.168.2.1")
+        event_connected = self.is_device_connected("169.254.10.1")
 
         # Update status indicators
         self.rgbCircle.setPixmap(self.draw_circle("green" if rgb_connected else "red"))
@@ -85,12 +88,24 @@ class HomePage(QMainWindow):
         self.thermalCircle.setPixmap(self.draw_circle("orange"))
         self.eventCircle.setPixmap(self.draw_circle("orange"))
 
-    def is_device_connected(self, device_name):
+    def is_device_connected(device_ip: str, timeout: int = 1) -> bool:
         """Check if a device is connected by its name."""
-        wmi = win32com.client.GetObject("winmgmts:\\\\.\\root\\cimv2")
+        """wmi = win32com.client.GetObject("winmgmts:\\\\.\\root\\cimv2")
         query = f"SELECT * FROM Win32_PnPEntity WHERE DeviceID LIKE '%{device_name}%'"
         devices = wmi.ExecQuery(query)
-        return any(device.DeviceID for device in devices)
+        return any(device.DeviceID for device in devices)"""
+        """Check if a device is connected by its IP address."""
+        try:
+            result = subprocess.run(
+                ["ping", "-n", "1", "-w", str(timeout * 1000), device_ip],  # Windows ping command
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+                check=False
+            )
+            return result.returncode == 0  # Return True if ping was successful
+        except Exception as e:
+            print(f"Error checking device: {e}")
+            return False
 
     # Page opening handlers
     def open_hand_gesture_page(self):
@@ -125,7 +140,8 @@ class HomePage(QMainWindow):
     def open_thermal_page(self):
         """show and run thermal page"""
         self.close_other_pages()
-        print("Thermal demo selected.")
+        self.thermal_page=ThermalCameraPage()
+        self.thermal_page.show()
 
     def open_counting_page(self):
         """show and run event camera high speed counting page/alg"""
