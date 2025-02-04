@@ -3,7 +3,10 @@ def load_stylesheet(window,styleSheetPath):
         with open(styleSheetPath, "r") as file:
             window.setStyleSheet(file.read())
 
-def close_event(event,recogniser):
-    """handle close event to release resources"""
-    recogniser.release()
+def close_event(event, widget):
+    """Handle cleanup when closing a page"""
+    if hasattr(widget, "cap"):  # Ensure widget has a video capture instance
+        widget.cap.release()
+    if hasattr(widget, "timer"):  # Stop the timer if it exists
+        widget.timer.stop()
     event.accept()
