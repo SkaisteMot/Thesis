@@ -88,7 +88,7 @@ class HomePage(QMainWindow):
         self.thermalCircle.setPixmap(self.draw_circle("orange"))
         self.eventCircle.setPixmap(self.draw_circle("orange"))
 
-    def is_device_connected(device_ip: str, timeout: int = 1) -> bool:
+    def is_device_connected(self,device_ip: str, timeout: int = 1) -> bool:
         """Check if a device is connected by its name."""
         """wmi = win32com.client.GetObject("winmgmts:\\\\.\\root\\cimv2")
         query = f"SELECT * FROM Win32_PnPEntity WHERE DeviceID LIKE '%{device_name}%'"
@@ -97,15 +97,16 @@ class HomePage(QMainWindow):
         """Check if a device is connected by its IP address."""
         try:
             result = subprocess.run(
-                ["ping", "-n", "1", "-w", str(timeout * 1000), device_ip],  # Windows ping command
+                ["ping", "-n", "1", "-w", str(timeout * 1000), device_ip],
                 stdout=subprocess.DEVNULL,
                 stderr=subprocess.DEVNULL,
                 check=False
             )
-            return result.returncode == 0  # Return True if ping was successful
+            return result.returncode == 0
         except Exception as e:
             print(f"Error checking device: {e}")
             return False
+
 
     # Page opening handlers
     def open_hand_gesture_page(self):
