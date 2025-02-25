@@ -1,5 +1,5 @@
 """Application Home page, contains general description and buttons that lead to relevant algs"""
-import win32com.client
+#import win32com.client
 from PyQt5.QtWidgets import QMainWindow, QApplication, QMessageBox
 from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtGui import QPixmap, QPainter, QColor
@@ -10,6 +10,8 @@ from App.pages.hand_gesture_page import HandGestureRecognitionPage
 from App.pages.facial_expression_page import FacialExpressionRecognitionPage
 from App.pages.general_page import GeneralDemoPage
 from App.pages.thermalTest import ThermalCameraPage
+from App.pages.eventTest import EventCameraPage
+from App.pages.lidarTest import LidarCameraPage
 from utils import load_stylesheet
 
 
@@ -53,7 +55,7 @@ class HomePage(QMainWindow):
         # Timer to update connection status
         self.connection_timer = QTimer(self)
         self.connection_timer.timeout.connect(self.update_connection_status)
-        self.connection_timer.start(2000)  # Check every 2 seconds
+        self.connection_timer.start(5000)  # Check every 5 seconds
 
         load_stylesheet(self,'App/styles/home.qss')
 
@@ -88,7 +90,7 @@ class HomePage(QMainWindow):
         self.thermalCircle.setPixmap(self.draw_circle("orange"))
         self.eventCircle.setPixmap(self.draw_circle("orange"))
 
-    def is_device_connected(device_ip: str, timeout: int = 1) -> bool:
+    def is_device_connected(self,device_ip: str, timeout: int = 1) -> bool:
         """Check if a device is connected by its name."""
         """wmi = win32com.client.GetObject("winmgmts:\\\\.\\root\\cimv2")
         query = f"SELECT * FROM Win32_PnPEntity WHERE DeviceID LIKE '%{device_name}%'"
@@ -135,6 +137,8 @@ class HomePage(QMainWindow):
     def open_lidar_page(self):
         """show and run lidar page"""
         self.close_other_pages()
+        self.lidar_page=LidarCameraPage()
+        self.lidar_page.show()
         print("LiDAR demo selected.")
 
     def open_thermal_page(self):
@@ -146,6 +150,8 @@ class HomePage(QMainWindow):
     def open_counting_page(self):
         """show and run event camera high speed counting page/alg"""
         self.close_other_pages()
+        self.event_page=EventCameraPage()
+        self.event_page.show()
         print("Event Camera Counting demo selected.")
 
     def close_other_pages(self):

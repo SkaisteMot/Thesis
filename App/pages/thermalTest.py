@@ -1,60 +1,103 @@
+import sys
 import cv2
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel
-from PyQt5.QtGui import QPixmap, QImage
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel
 from PyQt5.QtCore import QTimer, Qt
+from PyQt5.QtGui import QPixmap, QImage
 from utils import load_stylesheet, close_event
 
 class ThermalCameraPage(QWidget):
     """Thermal Camera Streaming Page"""
-    def __init__(self, camera_index=0):
+    def __init__(self):
         super().__init__()
         self.setWindowTitle("Thermal Camera Stream")
         self.setGeometry(100, 100, 800, 600)
 
-        # Layout
-        self.layout = QVBoxLayout()
-        self.video_label = QLabel()
-        self.video_label.setAlignment(Qt.AlignCenter)
-        self.video_label.setObjectName("video_label")
-        self.layout.addWidget(self.video_label)
-        self.setLayout(self.layout)
+        # Main layout (horizontal split)
+        self.main_layout = QHBoxLayout()
+
+        # Left side: Thermal feed
+        self.video_layout = QVBoxLayout()
+        self.thermal_feed = QLabel()
+        self.thermal_feed.setObjectName("thermal_feed")
+        self.thermal_feed.setAlignment(Qt.AlignCenter)
+        self.thermal_feed.setScaledContents(True)
+        self.video_layout.addWidget(self.thermal_feed)
+        
+        # Right side: Title and description
+        self.info_layout = QVBoxLayout()
+        self.title_label = QLabel("Thermal Camera Stream")
+        self.title_label.setAlignment(Qt.AlignCenter)
+        self.title_label.setObjectName("title_label")
+        
+        self.description_label = QLabel("This page displays a real-time thermal camera feed. The feed is obtained via an RTSP stream and provides thermal imaging visualization.")
+        self.description_label.setWordWrap(True)
+        self.description_label.setAlignment(Qt.AlignCenter)
+        self.description_label.setObjectName("description_label")
+        
+        self.info_layout.addWidget(self.title_label)
+        self.info_layout.addWidget(self.description_label)
+        self.info_layout.addStretch()
+        
+        # Add sections to main layout
+        self.main_layout.addLayout(self.video_layout, 1)  # 50% width
+        self.main_layout.addLayout(self.info_layout, 1)  # 50% width
+        self.setLayout(self.main_layout)
 
         # Load stylesheet
         #load_stylesheet(self, "App/styles/thermal_camera.qss")
+        
+        # Initialize the RTSP stream
+        self.rtsp_url = "rtsp://admin:valeo123@192.168.2.64:554/Streaming/Channels/101/"
+        self.cap = None
+        self.connect_to_thermal_stream()
 
-        # Open Thermal Camera Stream
-        self.cap = cv2.VideoCapture(camera_index)  # Change index if needed
-        if not self.cap.isOpened():
-            print("Error: Cannot open thermal camera")
-            return
-
-        # Timer for updating frames
+        # Setup timer for frame updates
         self.timer = QTimer()
         self.timer.timeout.connect(self.update_frame)
-        self.timer.start(30)  # Update every 30ms
-
+        self.timer.start(30)
+    
+    def connect_to_thermal_stream(self):
+        """Connect to the RTSP thermal stream"""
+        try:
+            self.cap = cv2.VideoCapture(self.rtsp_url)
+            self.cap.set(cv2.CAP_PROP_BUFFERSIZE, 3)
+            if not self.cap.isOpened():
+                print("Error: Could not connect to thermal stream")
+                self.cap = cv2.VideoCapture(0)
+            print("Successfully connected to thermal stream")
+        except Exception as e:
+            print(f"Error connecting to thermal stream: {e}")
+            self.cap = cv2.VideoCapture(0)
+    
     def update_frame(self):
-        """Capture frame and display it"""
-        ret, frame = self.cap.read()
-        if not ret:
-            print("Failed to grab frame")
-            return
-
-        # Convert to grayscale (if necessary)
-        gray_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-
-        # Convert to QPixmap
-        height, width = gray_frame.shape
-        bytes_per_line = width
-        qimg = QImage(gray_frame.data, width, height, bytes_per_line, QImage.Format_Grayscale8)
-        pixmap = QPixmap.fromImage(qimg)
-        self.video_label.setPixmap(pixmap)
-
+        """Update frames from video stream"""
+        if self.cap and self.cap.isOpened():
+            ret, thermal_frame = self.cap.read()
+            if ret:
+                self.thermal_feed.setPixmap(self._convert_cv_to_qt(thermal_frame))
+            else:
+                print("Failed to read frame from thermal stream")
+    
+    def _convert_cv_to_qt(self, cv_img):
+        """Convert cv2 img to qpixmap for display in QLabel"""
+        if cv_img is None:
+            return QPixmap()
+        if len(cv_img.shape) == 2:
+            h, w = cv_img.shape
+            qt_image = QImage(cv_img.data, w, h, w, QImage.Format_Grayscale8)
+        else:
+            h, w, ch = cv_img.shape
+            rgb_image = cv2.cvtColor(cv_img, cv2.COLOR_BGR2RGB)
+            qt_image = QImage(rgb_image.data, w, h, ch * w, QImage.Format_RGB888)
+        return QPixmap.fromImage(qt_image)
+    
     def release(self):
-        """Release resources"""
-        if hasattr(self, "cap") and self.cap.isOpened():
+        """Release resources properly"""
+        if hasattr(self, "timer") and self.timer.isActive():
+            self.timer.stop()
+        if self.cap and self.cap.isOpened():
             self.cap.release()
-
+    
     def closeEvent(self, event):
-        """Handle close event"""
+        """Handle close event to release resources"""
         close_event(event, self)
