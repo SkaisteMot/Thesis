@@ -29,7 +29,7 @@ class LidarCameraPage(QWidget):
         self.title_label.setAlignment(Qt.AlignCenter)
         self.title_label.setObjectName("title_label")
         
-        self.description_label = QLabel("This page displays a real-time LiDAR camera feed from CeptonViewer.")
+        self.description_label = QLabel("To Do: see if can open inside not thjrough ceptonviewer: add description.")
         self.description_label.setWordWrap(True)
         self.description_label.setAlignment(Qt.AlignCenter)
         self.description_label.setObjectName("description_label")

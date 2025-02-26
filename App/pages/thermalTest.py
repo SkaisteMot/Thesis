@@ -29,7 +29,7 @@ class ThermalCameraPage(QWidget):
         self.title_label.setAlignment(Qt.AlignCenter)
         self.title_label.setObjectName("title_label")
         
-        self.description_label = QLabel("This page displays a real-time thermal camera feed. The feed is obtained via an RTSP stream and provides thermal imaging visualization.")
+        self.description_label = QLabel("To Do: add description")
         self.description_label.setWordWrap(True)
         self.description_label.setAlignment(Qt.AlignCenter)
         self.description_label.setObjectName("description_label")

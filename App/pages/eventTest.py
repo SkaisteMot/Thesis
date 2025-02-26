@@ -43,7 +43,8 @@ class EventCameraPage(QWidget):
         instructions = (
             "The Event Camera stream is being displayed in a separate window.\n"
             "This window uses Xming X server to display the prophesee_viewer output.\n\n"
-            "Closing this page will automatically stop the stream."
+            "Closing this page will automatically stop the stream. \n"
+            "To Do: open this to the left and add description"
         )
         self.info_label = QLabel(instructions)
         self.info_label.setWordWrap(True)
