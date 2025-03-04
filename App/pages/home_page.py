@@ -115,38 +115,37 @@ class HomePage(QMainWindow):
         """show and run hand gesture page/alg"""
         self.close_other_pages()
         self.hand_gesture_page = HandGestureRecognitionPage()
-        self.hand_gesture_page.show()
+        self.hand_gesture_page.showMaximized()
 
     def open_facial_expression_page(self):
         """show and run face/emotion expression page/alg"""
         self.close_other_pages()
         self.facial_expression_page = FacialExpressionRecognitionPage()
-        self.facial_expression_page.show()
+        self.facial_expression_page.showMaximized()
 
     def open_object_detection_page(self):
         """show and run object detection page/alg, pass in title and description"""
         self.close_other_pages()
         self.object_detection_page = GeneralDemoPage("object")
-        self.object_detection_page.show()
+        self.object_detection_page.showMaximized()
 
     def open_colour_detection_page(self):
         """show and run colour detection page/alg, pass in title and description"""
         self.close_other_pages()
         self.colour_detection_page = GeneralDemoPage("colour")
-        self.colour_detection_page.show()
+        self.colour_detection_page.showMaximized()
 
     def open_lidar_page(self):
         """show and run lidar page"""
         self.close_other_pages()
         self.lidar_page=LidarCameraPage()
         self.lidar_page.show()
-        print("LiDAR demo selected.")
 
     def open_thermal_page(self):
         """show and run thermal page"""
         self.close_other_pages()
         self.thermal_page=ThermalCameraPage()
-        self.thermal_page.show()
+        self.thermal_page.showMaximized()
 
     def open_counting_page(self):
         """show and run event camera high speed counting page/alg"""
