@@ -12,7 +12,7 @@ class EventCameraPage(QWidget):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Event Camera Stream")
-        self.setGeometry(100, 100, 800, 600)
+        self.setGeometry(800, 100, 800, 600)
         
         # Track processes
         self.xming_process = None
