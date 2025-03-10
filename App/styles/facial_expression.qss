@@ -26,3 +26,10 @@ QWidget {
     height: 200px;
     margin: 10px;
 }
+
+#description {
+    font-size: 18px;
+    font-weight: normal;
+    text-align: left;
+    color:black;
+}

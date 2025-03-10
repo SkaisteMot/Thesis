@@ -10,6 +10,8 @@ from Algorithms.Objects.object_detection import ObjectRecognizer
 from utils import load_stylesheet,close_event
 from PyQt5.QtCore import QTimer, Qt
 
+from PyQt5.QtGui import QPixmap, QImage, QFontMetrics, QFont
+
 class GeneralDemoPage(QWidget):
     """Page used for general display of streams"""
     def __init__(self, algorithm: str):
@@ -19,12 +21,11 @@ class GeneralDemoPage(QWidget):
         if self.algorithm == "colour":
             self.setWindowTitle("Colour Detection")
             self.recognizer = ColourRecognizer('Datasets/colour_ranges.csv')
-            instructions = "Hold up one of the following colours:"
+            instructions = "Hold up one of the following colours: Red, Blue, Yellow, Green, Purple" ##change this to autofill based on csv
             description = ("The program detects colours in an image using predefined colour ranges. It "
                            "first creates a mask to highlight areas that match each colour. Then, it "
                            "finds the boundaries of these colour regions and draws outlines around them, "
                            "making it easy to identify and count different colours in the video.")
-
         elif self.algorithm == "object":
             self.setWindowTitle("Object Detection")
             instructions = "Hold up an object to detect and classify"
@@ -54,6 +55,8 @@ class GeneralDemoPage(QWidget):
         self.output_label = QLabel(instructions)
         self.output_label.setObjectName("output_label")
         self.output_label.setAlignment(Qt.AlignCenter)
+        self.output_label.setWordWrap(True)  # Allow text to wrap
+        self.adjust_output_label_height()  # Adjust height based on text
         right_panel.addWidget(self.output_label, stretch=1)
 
         # Description Section
@@ -82,6 +85,13 @@ class GeneralDemoPage(QWidget):
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.update_frame)
         self.timer.start(20)  # 20ms interval
+
+    def adjust_output_label_height(self):
+        """Adjust output label height based on the text lines"""
+        font = self.output_label.font()
+        fm = QFontMetrics(font)
+        text_height = fm.boundingRect(self.output_label.text()).height()
+        self.output_label.setFixedHeight(text_height + 30)  # Add padding
 
     def update_frame(self):
         """Capture and process frames for display"""

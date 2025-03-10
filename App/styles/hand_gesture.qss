@@ -26,3 +26,10 @@ QWidget {
     width: 640px;
     height: 480px;
 }
+
+#instructions {
+    font-size: 18px;
+    font-weight: normal;
+    text-align: left;
+    color:black;
+}
