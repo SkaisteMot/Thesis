@@ -3,6 +3,7 @@
 from PyQt5.QtWidgets import QMainWindow, QApplication, QMessageBox
 from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtGui import QPixmap, QPainter, QColor
+from PyQt5.QtSvg import QSvgWidget
 from PyQt5 import uic
 import subprocess
 
@@ -23,6 +24,10 @@ class HomePage(QMainWindow):
         # Load the UI file
         uic.loadUi("App/home_page.ui", self)
         self.setWindowTitle("Home")
+
+        # QR Code Display
+        self.qr_code_label = QSvgWidget("Datasets/QRcodes/home_QR.svg", self)  # Load the SVG file
+        self.qr_code_label.setGeometry(1150, 750, 200, 200)  # Position and size
 
         #Init buttons for linting W0201
         self.hand_gesture_page=None
