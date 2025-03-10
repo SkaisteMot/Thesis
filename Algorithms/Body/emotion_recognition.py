@@ -1,4 +1,3 @@
-"""Emotion Recogntion, display relevent emoji in seperate window"""
 from dataclasses import dataclass
 from typing import Optional
 import cv2
@@ -9,10 +8,11 @@ from fer import FER
 class EmotionResult:
     main_frame: np.ndarray
     emoji: np.ndarray
+    emotion_text: str
 
 class EmotionRecognizer:
     """
-    Emotion recognizer class called by the ui
+    Emotion recognizer class called by the UI
     """
     def __init__(self, emoji_paths):
         self.emoji_paths = emoji_paths
@@ -26,7 +26,6 @@ class EmotionRecognizer:
         for expression_name, path in self.emoji_paths.items():
             emoji = cv2.imread(path, cv2.IMREAD_UNCHANGED)
             if emoji is not None:
-                # Convert BGRA to BGR if needed
                 if emoji.shape[2] == 4:
                     emoji = cv2.cvtColor(emoji, cv2.COLOR_BGRA2BGR)
                 emojis[expression_name] = cv2.resize(emoji, (200, 200))
@@ -37,33 +36,49 @@ class EmotionRecognizer:
     def _get_emotion_emoji(self, emotion):
         return self.emoji_icons.get(emotion, self.blank_image)
 
+    def _compare_faces(self, face1, face2):
+        """
+        Compare two faces by checking if their bounding boxes are exactly the same
+        """
+        return (face1['box'] == face2['box']).all()
+
     def process_frame(self) -> Optional[EmotionResult]:
         """Process the input and output the relevant emoji"""
         ret, frame = self.cap.read()
         if not ret:
             return None
 
-        # Detect emotions in the frame
+        frame = cv2.resize(frame, (960, 540))
+        
         emotion_data = self.detector.detect_emotions(frame)
-
-        # Default to neutral emoji if no emotions are detected
         emoji_img = self.blank_image
+        dominant_emotion = "Neutral"
 
         if emotion_data:
-            # Process each detected face and find the dominant emotion
-            for face in emotion_data:
-                emotions = face["emotions"]
+            try:
+                largest_face = max(emotion_data, key=lambda x: x['box'][2] * x['box'][3])
+                emotions = largest_face["emotions"]
+                box = largest_face["box"]
                 dominant_emotion = max(emotions, key=emotions.get)
-
-                # Get the corresponding emoji for the dominant emotion
                 emoji_img = self._get_emotion_emoji(dominant_emotion)
+                
+                x, y, w, h = box
+                cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
 
-                # Display the detected emotion on the frame
+                for face in emotion_data:
+                    if not self._compare_faces(face, largest_face):
+                        x, y, w, h = face['box']
+                        cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 0, 255), 2)
+
                 cv2.putText(frame, f"Emotion: {dominant_emotion}",
                             (10, 50), cv2.FONT_HERSHEY_SIMPLEX, 1,
                             (255, 255, 255), 2)
-
-        return EmotionResult(main_frame=frame, emoji=emoji_img)
+            except Exception as e:
+                print(f"Error processing emotion data: {e}")
+                emoji_img = self.blank_image
+                dominant_emotion = "Unknown"
+        
+        return EmotionResult(main_frame=frame, emoji=emoji_img, emotion_text=dominant_emotion)
 
     def release(self):
         self.cap.release()
