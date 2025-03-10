@@ -2,7 +2,7 @@ import sys
 import numpy as np
 import vispy.app
 import vispy.scene
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QApplication
 from PyQt5.QtCore import QTimer, Qt
 import cepton_sdk
 import cv2
@@ -13,7 +13,7 @@ _all_builder = AllBuilder(__name__)
 
 class PlotCanvas(vispy.scene.SceneCanvas):
     def __init__(self, sensor, **kwargs):
-        super().__init__(**kwargs)
+        super().__init__(keys='interactive', **kwargs)
         self.unfreeze()  # Unfreeze the class to allow dynamic attributes
         self.view = self.central_widget.add_view()
         self.view.camera = vispy.scene.cameras.make_camera("turntable")
@@ -31,6 +31,11 @@ class PlotCanvas(vispy.scene.SceneCanvas):
         self.listener = cepton_sdk.SensorFramesListener(self.sensor.serial_number)
         self.lidar_data = None
         self.colors = None
+        
+        # Set up the timer
+        self.timer = QTimer()
+        self.timer.timeout.connect(self.on_timer)
+        self.timer.start(100)  # 100ms interval = 10 FPS
 
     def update_points(self, positions, colors=None, sizes=None):
         positions = positions - np.mean(positions, axis=0)
@@ -59,6 +64,7 @@ class PlotCanvas(vispy.scene.SceneCanvas):
             "size": sizes,
         }
         self.points_visual.set_data(**options)
+        self.update()  # Request canvas update
 
     def fetch_lidar_data(self):
         points_list = self.listener.get_points()
@@ -68,7 +74,7 @@ class PlotCanvas(vispy.scene.SceneCanvas):
             return self.lidar_data
         return None
 
-    def on_timer(self, event):
+    def on_timer(self):
         positions = self.fetch_lidar_data()
         if positions is not None:
             self.update_points(positions)
@@ -86,11 +92,20 @@ class LidarCameraPage(QWidget):
 
         # Left side: LiDAR feed
         self.video_layout = QVBoxLayout()
-        self.lidar_feed = QLabel()
-        self.lidar_feed.setObjectName("lidar_feed")
-        self.lidar_feed.setAlignment(Qt.AlignCenter)
-        self.lidar_feed.setScaledContents(True)
-        self.video_layout.addWidget(self.lidar_feed)
+        
+        # Initialize Cepton SDK and start the LiDAR stream
+        cepton_sdk.initialize(enable_wait=True)
+        self.sensor = cepton_sdk.Sensor.create_by_index(0)
+        print("Sensor Information:", self.sensor.information.to_dict())
+
+        # Initialize canvas to display LiDAR stream and embed in PyQt
+        self.canvas = PlotCanvas(sensor=self.sensor)
+        
+        # Create and configure a QWidget to embed the canvas
+        from vispy.app import use_app
+        app = use_app('pyqt5')
+        self.canvas_widget = self.canvas.native
+        self.video_layout.addWidget(self.canvas_widget)
 
         # Right side: Title and description
         self.info_layout = QVBoxLayout()
@@ -108,26 +123,13 @@ class LidarCameraPage(QWidget):
         self.info_layout.addStretch()
 
         # Add sections to main layout
-        self.main_layout.addLayout(self.video_layout, 1)
+        self.main_layout.addLayout(self.video_layout, 2)  # Give more space to the LiDAR view
         self.main_layout.addLayout(self.info_layout, 1)
         self.setLayout(self.main_layout)
-
-        # Initialize Cepton SDK and start the LiDAR stream
-        cepton_sdk.initialize(enable_wait=True)
-        self.sensor = cepton_sdk.Sensor.create_by_index(0)
-        print("Sensor Information:", self.sensor.information.to_dict())
-
-        # Initialize canvas to display LiDAR stream
-        self.canvas = PlotCanvas(sensor=self.sensor, keys='interactive', size=(800, 600))
-        self.canvas.show()
-
-        # Set a timer to call the on_timer method periodically
-        self.canvas.timer = vispy.app.Timer(interval=0.1, connect=self.canvas.on_timer, start=True)
 
     def closeEvent(self, event):
         """Handle close event"""
         print("LiDAR page is closing.")
-        cepton_sdk.cleanup()
+        if hasattr(self, 'canvas') and hasattr(self.canvas, 'timer'):
+            self.canvas.timer.stop()
         event.accept()
-
-
