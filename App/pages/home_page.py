@@ -25,10 +25,6 @@ class HomePage(QMainWindow):
         uic.loadUi("App/home_page.ui", self)
         self.setWindowTitle("Home")
 
-        # QR Code Display
-        self.qr_code_label = QSvgWidget("Datasets/QRcodes/home_QR.svg", self)  # Load the SVG file
-        self.qr_code_label.setGeometry(1150, 750, 200, 200)  # Position and size
-
         #Init buttons for linting W0201
         self.hand_gesture_page=None
         self.facial_expression_page=None

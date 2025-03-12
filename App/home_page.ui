@@ -18,7 +18,7 @@
     <property name="geometry">
      <rect>
       <x>1450</x>
-      <y>250</y>
+      <y>200</y>
       <width>350</width>
       <height>80</height>
      </rect>
@@ -31,7 +31,7 @@
     <property name="geometry">
      <rect>
       <x>1450</x>
-      <y>350</y>
+      <y>300</y>
       <width>350</width>
       <height>80</height>
      </rect>
@@ -44,7 +44,7 @@
     <property name="geometry">
      <rect>
       <x>1450</x>
-      <y>450</y>
+      <y>400</y>
       <width>350</width>
       <height>80</height>
      </rect>
@@ -57,7 +57,7 @@
     <property name="geometry">
      <rect>
       <x>1450</x>
-      <y>550</y>
+      <y>500</y>
       <width>350</width>
       <height>80</height>
      </rect>
@@ -70,7 +70,7 @@
     <property name="geometry">
      <rect>
       <x>1450</x>
-      <y>650</y>
+      <y>600</y>
       <width>350</width>
       <height>80</height>
      </rect>
@@ -83,7 +83,7 @@
     <property name="geometry">
      <rect>
       <x>1450</x>
-      <y>750</y>
+      <y>700</y>
       <width>350</width>
       <height>80</height>
      </rect>
@@ -96,7 +96,7 @@
     <property name="geometry">
      <rect>
       <x>1450</x>
-      <y>850</y>
+      <y>800</y>
       <width>350</width>
       <height>80</height>
      </rect>
@@ -109,7 +109,7 @@
     <property name="geometry">
      <rect>
       <x>130</x>
-      <y>285</y>
+      <y>310</y>
       <width>620</width>
       <height>75</height>
      </rect>
@@ -128,7 +128,7 @@
     <property name="geometry">
      <rect>
       <x>130</x>
-      <y>400</y>
+      <y>410</y>
       <width>1100</width>
       <height>470</height>
      </rect>
@@ -157,8 +157,8 @@ Click on a button to start exploring and enjoy the learning experience!
    <widget class="QFrame" name="frame">
     <property name="geometry">
      <rect>
-      <x>50</x>
-      <y>870</y>
+      <x>130</x>
+      <y>850</y>
       <width>761</width>
       <height>111</height>
      </rect>
@@ -340,6 +340,44 @@ Click on a button to start exploring and enjoy the learning experience!
     </property>
     <property name="scaledContents">
      <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QLabel" name="QR_Code">
+    <property name="geometry">
+     <rect>
+      <x>130</x>
+      <y>660</y>
+      <width>130</width>
+      <height>130</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="pixmap">
+     <pixmap>../Datasets/QRcodes/home_QR.svg</pixmap>
+    </property>
+    <property name="scaledContents">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QLabel" name="QR_label">
+    <property name="geometry">
+     <rect>
+      <x>280</x>
+      <y>660</y>
+      <width>800</width>
+      <height>130</height>
+     </rect>
+    </property>
+    <property name="font">
+      <font>
+       <pointsize>16</pointsize>
+       <fontweight>Medium</fontweight>
+      </font>
+     </property>
+    <property name="text">
+     <string>Scan this QR code to visit the sensor rig website and learn more about the sensors!</string>
     </property>
    </widget>
   </widget>
