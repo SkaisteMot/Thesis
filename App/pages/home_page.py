@@ -1,6 +1,6 @@
 """Application Home page, contains general description and buttons that lead to relevant algs"""
 #import win32com.client
-from PyQt5.QtWidgets import QMainWindow, QApplication, QMessageBox
+from PyQt5.QtWidgets import QMainWindow, QApplication, QMessageBox,QLabel
 from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtGui import QPixmap, QPainter, QColor
 from PyQt5.QtSvg import QSvgWidget
@@ -40,7 +40,6 @@ class HomePage(QMainWindow):
         self.thermalButton.clicked.connect(self.open_thermal_page)
         self.eventButton.clicked.connect(self.open_counting_page)
 
-
         #Button Tooltips
         self.handGestureButton.setToolTip("Recognize hand signs and display equivalent emoji")
         self.facialExpressionButton.setToolTip("Detect facial emotions")
@@ -49,6 +48,13 @@ class HomePage(QMainWindow):
         self.lidarButton.setToolTip("LiDAR point cloud")
         self.thermalButton.setToolTip("Demonstrate the temperatures in a frame")
         self.eventButton.setToolTip("Detect only movement in a frame")
+
+        self.qr_code_label = QSvgWidget("Datasets/QRcodes/feedback_form.svg", self)  # Load the SVG file
+        self.qr_code_label.setGeometry(1000, 100, 150, 150)  # Position and size
+
+        self.qr_label=QLabel("Feedback form",self)
+        self.qr_label.setGeometry(1000,250,150,50)
+        self.qr_label.setAlignment(Qt.AlignCenter)
 
         # Initialize status indicators
         self.set_status_to_searching()
