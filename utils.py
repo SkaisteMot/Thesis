@@ -10,3 +10,60 @@ def close_event(event, widget):
     if hasattr(widget, "timer"):  # Stop the timer if it exists
         widget.timer.stop()
     event.accept()
+
+import socket
+import threading
+import time
+from functools import lru_cache
+
+class DeviceStatusChecker:
+    def __init__(self):
+        self.device_statuses = {}
+        self.status_lock = threading.Lock()
+        self.check_interval = 5  # seconds between checks
+        self._stop_event = threading.Event()
+        self._thread = threading.Thread(target=self._background_check, daemon=True)
+        self._thread.start()
+    
+    def _background_check(self):
+        while not self._stop_event.is_set():
+            self._update_all_statuses()
+            time.sleep(self.check_interval)
+    
+    def _update_all_statuses(self):
+        print("Updating device statuses...")  # Debug
+        devices = {
+            "169.254.186.74": False,  # RGB
+            "169.254.65.122": False,  # LIDAR
+            "192.168.2.1": False,     # Thermal
+            "169.254.10.1": False     # Event
+        }
+
+        for ip in devices:
+            devices[ip] = self._check_device_connection(ip)
+            print(f"{ip} status: {devices[ip]}")  # Debugging
+
+        with self.status_lock:
+            self.device_statuses = devices
+
+    
+    def _check_device_connection(self, ip, port=135, timeout=0.5):
+        """Check if a device is connected by attempting a socket connection."""
+        try:
+            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            sock.settimeout(timeout)
+            result = sock.connect_ex((ip, port))
+            sock.close()
+            return result == 0
+        except:
+            return False
+    
+    def get_status(self, ip):
+        """Get the current status of a device."""
+        with self.status_lock:
+            return self.device_statuses.get(ip, False)
+    
+    def stop(self):
+        """Stop the background thread."""
+        self._stop_event.set()
+        self._thread.join(timeout=1)

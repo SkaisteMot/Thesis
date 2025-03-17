@@ -13,7 +13,7 @@ from App.pages.general_page import GeneralDemoPage
 from App.pages.thermalTest import ThermalCameraPage
 from App.pages.eventTest import EventCameraPage
 from App.pages.lidarTest import LidarCameraPage
-from utils import load_stylesheet
+from utils import load_stylesheet, DeviceStatusChecker
 
 
 class HomePage(QMainWindow):
@@ -58,11 +58,12 @@ class HomePage(QMainWindow):
 
         # Initialize status indicators
         self.set_status_to_searching()
+        self.device_checker = DeviceStatusChecker()
 
         # Timer to update connection status
-        self.connection_timer = QTimer(self)
-        self.connection_timer.timeout.connect(self.update_connection_status)
-        self.connection_timer.start(5000)  # Check every 5 seconds
+        self.status_timer = QTimer()
+        self.status_timer.timeout.connect(self.update_connection_status)
+        self.status_timer.start(1000)  # Update UI every second
 
         load_stylesheet(self,'App/styles/home.qss')
 
@@ -78,12 +79,13 @@ class HomePage(QMainWindow):
         return pixmap
 
     def update_connection_status(self):
-        """Check actual connection status for devices."""
-        rgb_connected = self.is_device_connected("169.254.186.74")
-        lidar_connected = self.is_device_connected("169.254.65.122")
-        thermal_connected = self.is_device_connected("192.168.2.1")
-        event_connected = self.is_device_connected("169.254.10.1")
-
+        """Update UI with current connection status."""
+        # Get current status (these are fast lookups, not network operations)
+        rgb_connected = self.device_checker.get_status("169.254.186.74")
+        lidar_connected = self.device_checker.get_status("169.254.65.122")
+        thermal_connected = self.device_checker.get_status("192.168.2.1")
+        event_connected = self.device_checker.get_status("169.254.10.1")
+        
         # Update status indicators
         self.rgbCircle.setPixmap(self.draw_circle("green" if rgb_connected else "red"))
         self.lidarCircle.setPixmap(self.draw_circle("green" if lidar_connected else "red"))
@@ -96,26 +98,6 @@ class HomePage(QMainWindow):
         self.lidarCircle.setPixmap(self.draw_circle("orange"))
         self.thermalCircle.setPixmap(self.draw_circle("orange"))
         self.eventCircle.setPixmap(self.draw_circle("orange"))
-
-    def is_device_connected(self,device_ip: str, timeout: int = 1) -> bool:
-        """Check if a device is connected by its name."""
-        """wmi = win32com.client.GetObject("winmgmts:\\\\.\\root\\cimv2")
-        query = f"SELECT * FROM Win32_PnPEntity WHERE DeviceID LIKE '%{device_name}%'"
-        devices = wmi.ExecQuery(query)
-        return any(device.DeviceID for device in devices)"""
-        """Check if a device is connected by its IP address."""
-        try:
-            result = subprocess.run(
-                ["ping", "-n", "1", "-w", str(timeout * 1000), device_ip],
-                stdout=subprocess.DEVNULL,
-                stderr=subprocess.DEVNULL,
-                check=False
-            )
-            return result.returncode == 0
-        except Exception as e:
-            print(f"Error checking device: {e}")
-            return False
-
 
     # Page opening handlers
     def open_hand_gesture_page(self):
@@ -191,5 +173,6 @@ class HomePage(QMainWindow):
         if reply == QMessageBox.Yes:
             event.accept()
             QApplication.quit()
+            self.device_checker.stop()
         else:
             event.ignore()
