@@ -1,12 +1,9 @@
 """Application Home page, contains general description and buttons that lead to relevant algs"""
-#import win32com.client
 from PyQt5.QtWidgets import QMainWindow, QApplication, QMessageBox,QLabel
 from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtGui import QPixmap, QPainter, QColor
 from PyQt5.QtSvg import QSvgWidget
 from PyQt5 import uic
-import subprocess
-
 from App.pages.hand_gesture_page import HandGestureRecognitionPage
 from App.pages.facial_expression_page import FacialExpressionRecognitionPage
 from App.pages.general_page import GeneralDemoPage
@@ -14,7 +11,6 @@ from App.pages.thermalTest import ThermalCameraPage
 from App.pages.eventTest import EventCameraPage
 from App.pages.lidarTest import LidarCameraPage
 from utils import load_stylesheet, DeviceStatusChecker
-
 
 class HomePage(QMainWindow):
     """Home page called from main.py"""

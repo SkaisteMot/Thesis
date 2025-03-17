@@ -11,6 +11,21 @@ class FacialExpressionRecognitionPage(QWidget):
     """Emotion Recognition"""
     def __init__(self):
         super().__init__()
+        self.expression_recognizer = EmotionRecognizer()
+        self.emoji_icons = self._load_emojis()  # Load emojis in the UI class
+        self.blank_image = QPixmap(200, 200)
+        self.blank_image.fill(Qt.white)  # Blank white image for no emotion
+
+        self.setup_ui()
+
+        self.timer = QTimer()
+        self.timer.timeout.connect(self.update_frame)
+        self.timer.start(30)
+
+        load_stylesheet(self, 'App/styles/facial_expression.qss')
+
+    def _load_emojis(self):
+        """Load emoji images from file paths"""
         emoji_paths = {
             'happy': 'Datasets/Emojis/happy.png',
             'sad': 'Datasets/Emojis/sad.png',
@@ -21,14 +36,14 @@ class FacialExpressionRecognitionPage(QWidget):
             'disgust': 'Datasets/Emojis/disgust.png',
         }
 
-        self.expression_recognizer = EmotionRecognizer(emoji_paths)
-        self.setup_ui()
-
-        self.timer = QTimer()
-        self.timer.timeout.connect(self.update_frame)
-        self.timer.start(30)
-
-        load_stylesheet(self, 'App/styles/facial_expression.qss')
+        emojis = {}
+        for expression, path in emoji_paths.items():
+            pixmap = QPixmap(path)
+            if pixmap.isNull():
+                print(f"Warning: Could not load emoji {path}")
+            else:
+                emojis[expression] = pixmap.scaled(200, 200, Qt.KeepAspectRatio)
+        return emojis
 
     def setup_ui(self):
         """Setup face expression page UI"""
@@ -42,17 +57,17 @@ class FacialExpressionRecognitionPage(QWidget):
         self.video_feed = QLabel()
         self.video_feed.setObjectName("video_feed")
         self.video_feed.setScaledContents(True)
-        self.video_feed.setFixedSize(800, 800)  # More square aspect ratio
+        self.video_feed.setFixedSize(800, 800)
         self.video_feed.setAlignment(Qt.AlignCenter)
         left_layout.addWidget(self.video_feed, alignment=Qt.AlignCenter)
         left_layout.addStretch()
 
-        # Right panel for emoji display and description
+        # Right panel for emoji display
         right_layout = QVBoxLayout()
-        right_layout.setAlignment(Qt.AlignTop | Qt.AlignHCenter)  # Align content to top and center horizontally
+        right_layout.setAlignment(Qt.AlignTop | Qt.AlignHCenter)
 
-        emoji_layout = QVBoxLayout()  # Sub-layout to center emoji and label horizontally
-        emoji_layout.setAlignment(Qt.AlignHCenter)  # Align horizontally center
+        emoji_layout = QVBoxLayout()
+        emoji_layout.setAlignment(Qt.AlignHCenter)
 
         self.emoji_label = QLabel("Expression:")
         self.emoji_label.setObjectName("emoji_label")
@@ -64,27 +79,22 @@ class FacialExpressionRecognitionPage(QWidget):
         self.face_emoji.setScaledContents(True)
         self.face_emoji.setAlignment(Qt.AlignCenter)
 
-        # Add emoji label and image to sub-layout
         emoji_layout.addWidget(self.emoji_label)
         emoji_layout.addWidget(self.face_emoji)
+        right_layout.addLayout(emoji_layout)
 
-        # Add emoji section to the right layout
-        right_layout.addLayout(emoji_layout)  
-
-        # Instruction label positioned near the top
-        self.discription = QLabel("Make one of the following faces: 😊☹️😨😠😮🤢\n"
-                                "(Happy, Sad, Scared, Angry, Surprised, Disgusted)\n"
-                                "\nFacial expression recognition begins by detecting a"
-                                " face in the camera frame. Key facial landmarks, such as the eyes, eyebrows, nose, and mouth, are then "
-                                "identified. The system analyzes the positions and movements of these landmarks to classify expressions"
-                                " like happiness, sadness, anger, or surprise.")
-        self.discription.setAlignment(Qt.AlignTop | Qt.AlignCenter)
-        self.discription.setObjectName("description")
-        self.discription.setWordWrap(True)
-        self.discription.setMaximumWidth(600)
-
-        # Add description after emoji section, also centered horizontally
-        right_layout.addWidget(self.discription, alignment=Qt.AlignTop | Qt.AlignLeft)
+        # Instruction label
+        self.description = QLabel("Make one of the following faces: 😊☹️😨😠😮🤢\n"
+                                  "(Happy, Sad, Scared, Angry, Surprised, Disgusted)\n"
+                                  "\nFacial expression recognition begins by detecting a"
+                                  " face in the camera frame. Key facial landmarks, such as the eyes, eyebrows, nose, and mouth, are then "
+                                  "identified. The system analyzes the positions and movements of these landmarks to classify expressions"
+                                  " like happiness, sadness, anger, or surprise.")
+        self.description.setAlignment(Qt.AlignTop | Qt.AlignCenter)
+        self.description.setObjectName("description")
+        self.description.setWordWrap(True)
+        self.description.setMaximumWidth(600)
+        right_layout.addWidget(self.description, alignment=Qt.AlignTop | Qt.AlignLeft)
 
         main_layout.addLayout(left_layout)
         main_layout.addLayout(right_layout)
@@ -95,7 +105,7 @@ class FacialExpressionRecognitionPage(QWidget):
         result = self.expression_recognizer.process_frame()
         if result:
             self.video_feed.setPixmap(self._convert_cv_to_qt(result.main_frame))
-            self.face_emoji.setPixmap(self._convert_cv_to_qt(result.emoji))
+            self.face_emoji.setPixmap(self.emoji_icons.get(result.emotion_text, self.blank_image))
 
     def _convert_cv_to_qt(self, cv_img):
         """Convert cv2 img to QPixmap for display in QLabel"""

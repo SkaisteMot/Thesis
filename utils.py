@@ -31,7 +31,6 @@ class DeviceStatusChecker:
             time.sleep(self.check_interval)
     
     def _update_all_statuses(self):
-        print("Updating device statuses...")  # Debug
         devices = {
             "169.254.186.74": False,  # RGB
             "169.254.65.122": False,  # LIDAR
@@ -41,7 +40,6 @@ class DeviceStatusChecker:
 
         for ip in devices:
             devices[ip] = self._check_device_connection(ip)
-            print(f"{ip} status: {devices[ip]}")  # Debugging
 
         with self.status_lock:
             self.device_statuses = devices

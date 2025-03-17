@@ -116,12 +116,17 @@ class GeneralDemoPage(QWidget):
             processed_frame = frame  # Fallback to original frame
 
         # Convert processed frame to QImage
-        height, width, channels = processed_frame.shape  # Ensure all dimensions are captured
+        height, width, channels = processed_frame.shape
         bytes_per_line = channels * width
         qimg = QImage(processed_frame.data, width, height, bytes_per_line, QImage.Format_BGR888)
 
-        # Update QLabel with new frame
-        self.video_label.setPixmap(QPixmap.fromImage(qimg))
+        # Convert to QPixmap and SCALE to fit label size
+        pixmap = QPixmap.fromImage(qimg)
+        scaled_pixmap = pixmap.scaled(self.video_label.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
+
+        # Update QLabel with scaled frame
+        self.video_label.setPixmap(scaled_pixmap)
+
 
     def closeEvent(self, event):
         """Handle window close event to release resources"""

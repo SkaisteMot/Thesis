@@ -3,6 +3,7 @@ import cv2
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QHBoxLayout
 from PyQt5.QtGui import QPixmap, QImage
 from PyQt5.QtCore import QTimer, Qt
+from PyQt5.QtSvg import QSvgWidget
 
 from Algorithms.Body.hand_gesture_test import GestureRecognizer
 from utils import load_stylesheet,close_event
@@ -11,16 +12,20 @@ class HandGestureRecognitionPage(QWidget):
     """Hand gesture recognizer"""
     def __init__(self):
         super().__init__()
-        icon_paths = {
-            'Thumb_Up': 'Datasets/HandIcons/thumbs_up.png',
-            'Thumb_Down': 'Datasets/HandIcons/thumbs_down.png',
-            'Pointing_Up': 'Datasets/HandIcons/point_up.png',
-            'Victory': 'Datasets/HandIcons/peace.png',
-            'Closed_Fist': 'Datasets/HandIcons/fist.png',
-            'Open_Palm': 'Datasets/HandIcons/wave.png',
-            'ILoveYou': 'Datasets/HandIcons/rock.png'
+        self.icon_paths = {
+            'Thumb_Up': 'Datasets/HandIcons/thumbs_up.svg',
+            'Thumb_Down': 'Datasets/HandIcons/thumbs_down.svg',
+            'Pointing_Up': 'Datasets/HandIcons/point_up.svg',
+            'Victory': 'Datasets/HandIcons/peace.svg',
+            'Closed_Fist': 'Datasets/HandIcons/fist.svg',
+            'Open_Palm': 'Datasets/HandIcons/wave.svg',
+            'ILoveYou': 'Datasets/HandIcons/rock.svg'
         }
-        self.gesture_recognizer = GestureRecognizer(icon_paths)
+
+        self.blank_pixmap = QPixmap(200, 200)
+        self.blank_pixmap.fill(Qt.white)
+
+        self.gesture_recognizer = GestureRecognizer()
         self.setup_ui()
 
         self.timer = QTimer()
@@ -50,12 +55,25 @@ class HandGestureRecognitionPage(QWidget):
         self.left_instruction.setAlignment(Qt.AlignCenter)  # Centering instruction text
         self.left_instruction.setWordWrap(True)
         self.left_instruction.setMaximumWidth(500)
+        self.left_instruction.setFixedSize(500,100)
         self.left_instruction.setObjectName("instructions")
+
+        self.qr_code=QSvgWidget("Datasets/QRcodes/rgb_QR.svg")
+        self.qr_label=QLabel("Scan this to learn more about RGB cameras!")
+        self.qr_code.setFixedSize(150,150)
+        self.qr_label.setObjectName("instructions")
+        self.qr_label.setWordWrap(True)
+        self.qr_label.setFixedSize(350,150)
+
+        qr_layout=QHBoxLayout()
+        qr_layout.addWidget(self.qr_code, alignment=Qt.AlignLeft)
+        qr_layout.addWidget(self.qr_label, alignment=Qt.AlignHCenter)
 
         left_layout.addWidget(self.left_label, alignment=Qt.AlignHCenter)
         left_layout.addWidget(self.left_emoji, alignment=Qt.AlignHCenter)
         left_layout.addWidget(self.left_instruction, alignment=Qt.AlignHCenter)
         left_layout.addStretch()
+        left_layout.addLayout(qr_layout)
 
         # Center video feed
         self.video_feed = QLabel()
@@ -93,15 +111,20 @@ class HandGestureRecognitionPage(QWidget):
         main_layout.addLayout(right_layout, 1)  # Right panel takes equal space
         self.setLayout(main_layout)
 
-
-
     def update_frame(self):
-        """update the video feed and hand gesture icons"""
+        """Update the video feed and hand gesture icons"""
         result = self.gesture_recognizer.process_frame()
         if result:
             self.video_feed.setPixmap(self._convert_cv_to_qt(result.main_frame))
-            self.left_emoji.setPixmap(self._convert_cv_to_qt(result.left_emoji))
-            self.right_emoji.setPixmap(self._convert_cv_to_qt(result.right_emoji))
+            self.left_emoji.setPixmap(self._get_icon(result.left_label))
+            self.right_emoji.setPixmap(self._get_icon(result.right_label))
+
+    def _get_icon(self, label):
+        """Retrieve the correct icon based on the label"""
+        if label in self.icon_paths:
+            return QPixmap(self.icon_paths[label])
+        return self.blank_pixmap  # Return blank image if label not found
+
 
     def _convert_cv_to_qt(self, cv_img):
         """convert cv2 img to qpixmap for display in qlabel"""
