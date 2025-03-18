@@ -32,7 +32,19 @@ class EventCameraPage(QWidget):
         self.status_label.setAlignment(Qt.AlignRight | Qt.AlignVCenter)  # Align text to right
         self.status_label.setObjectName("status_label")
 
+        self.description=QLabel("An event camera is a neuromorphic sensor that detects changes "
+                                "in brightness at each pixel instead of capturing full images at "
+                                "a fixed rate. Each pixel operates independently, generating an 'event'"
+                                " only when a brightness change occurs, allowing for ultra-fast response "
+                                "times, low power consumption, and high dynamic range. This makes event "
+                                "cameras ideal for applications requiring real-time motion detection, such "
+                                "as robotics, autonomous vehicles, and high-speed tracking, especially in "
+                                "challenging lighting conditions. Inspired by the human eye, they efficiently"
+                                " capture dynamic scenes with minimal data redundancy.")
+        self.description.setWordWrap(True)
+
         self.layout.addWidget(self.status_label)
+        self.layout.addWidget(self.description)
 
         # Set layout
         container = QWidget()

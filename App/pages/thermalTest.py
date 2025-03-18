@@ -29,7 +29,17 @@ class ThermalCameraPage(QWidget):
         self.title_label.setAlignment(Qt.AlignCenter)
         self.title_label.setObjectName("title_label")
         
-        self.description_label = QLabel("To Do: add description")
+        self.description_label = QLabel("Thermal (infrared) cameras detect heat instead of "
+                                        "visible light. Every object emits infrared radiation based "
+                                        "on its temperature, and thermal cameras use special sensors "
+                                        "to capture this radiation. Warmer objects emit more infrared "
+                                        "energy, while cooler objects emit less. The camera converts "
+                                        "these heat patterns into an image, where different temperatures "
+                                        "appear as different colors—typically with warmer areas shown in "
+                                        "red, orange, or white and cooler areas in blue or purple. This"
+                                        " allows thermal cameras to see in complete darkness, through smoke, "
+                                        "and in harsh weather conditions, making them useful for applications "
+                                        "like night vision, search and rescue, and industrial inspections.")
         self.description_label.setWordWrap(True)
         self.description_label.setAlignment(Qt.AlignCenter)
         self.description_label.setObjectName("description_label")

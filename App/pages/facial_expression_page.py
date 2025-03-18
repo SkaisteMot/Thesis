@@ -80,7 +80,19 @@ class FacialExpressionRecognitionPage(QWidget):
         self.face_emoji.setScaledContents(True)
         self.face_emoji.setAlignment(Qt.AlignCenter)
 
-        
+        # Instruction label
+        self.description = QLabel("Make one of the following faces: 😊☹️😨😠😮🤢\n"
+                                  "(Happy, Sad, Scared, Angry, Surprised, Disgusted)\n"
+                                  "\nFacial expression recognition begins by detecting a"
+                                  " face in the camera frame. Key facial landmarks, such as the eyes, eyebrows, nose, and mouth, are then "
+                                  "identified. The system analyzes the positions and movements of these landmarks to classify expressions"
+                                  " like happiness, sadness, anger, or surprise.")
+        self.description.setAlignment(Qt.AlignTop | Qt.AlignCenter)
+        self.description.setObjectName("description")
+        self.description.setWordWrap(True)
+        self.description.setMaximumWidth(900)
+
+        #QR stuff
         self.qr_code=QSvgWidget("Datasets/QRcodes/rgb_QR.svg")
         self.qr_label=QLabel("Scan this to learn more about RGB cameras!")
         self.qr_code.setFixedSize(150,150)
@@ -95,18 +107,6 @@ class FacialExpressionRecognitionPage(QWidget):
         emoji_layout.addWidget(self.emoji_label)
         emoji_layout.addWidget(self.face_emoji)
         right_layout.addLayout(emoji_layout)
-
-        # Instruction label
-        self.description = QLabel("Make one of the following faces: 😊☹️😨😠😮🤢\n"
-                                  "(Happy, Sad, Scared, Angry, Surprised, Disgusted)\n"
-                                  "\nFacial expression recognition begins by detecting a"
-                                  " face in the camera frame. Key facial landmarks, such as the eyes, eyebrows, nose, and mouth, are then "
-                                  "identified. The system analyzes the positions and movements of these landmarks to classify expressions"
-                                  " like happiness, sadness, anger, or surprise.")
-        self.description.setAlignment(Qt.AlignTop | Qt.AlignCenter)
-        self.description.setObjectName("description")
-        self.description.setWordWrap(True)
-        self.description.setMaximumWidth(900)
         right_layout.addWidget(self.description, alignment=Qt.AlignTop | Qt.AlignLeft)
         right_layout.addStretch()
         right_layout.addLayout(qr_layout)

@@ -2,13 +2,13 @@ QWidget {
     background-color: #f0f0f0;
 }
 
-#video_label {
+#video_feed {
     background-color: black;
     min-width: 400px;
     min-height: 300px;
 }
 
-#output_label {
+#instructions {
     background-color: lightgray;
     font-size: 16px;
     padding: 10px;
@@ -16,7 +16,7 @@ QWidget {
     height: 150px;
 }
 
-#description_label {
+#description {
     font-size: 24px;
     font-weight: normal;
     text-align: left;

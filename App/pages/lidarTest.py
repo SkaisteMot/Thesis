@@ -113,7 +113,15 @@ class LidarCameraPage(QWidget):
         self.title_label.setAlignment(Qt.AlignCenter)
         self.title_label.setObjectName("title_label")
 
-        self.description_label = QLabel("LiDAR data stream visualization")
+        self.description_label = QLabel("LiDAR (Light Detection and Ranging) works by emitting laser "
+                                        "pulses and measuring the time it takes for them to bounce back "
+                                        "after hitting an object. Since the speed of light is constant, the "
+                                        "system can calculate the exact distance to each object based on the "
+                                        "time delay.By sending out millions of these laser pulses in different "
+                                        "directions, LiDAR creates a detailed 3D map of its surroundings. It's "
+                                        "commonly used in self-driving cars, drones, and mapping applications "
+                                        "because it provides precise depth information, even in low light or "
+                                        "foggy conditions.")
         self.description_label.setWordWrap(True)
         self.description_label.setAlignment(Qt.AlignCenter)
         self.description_label.setObjectName("description_label")

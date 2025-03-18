@@ -20,18 +20,18 @@ class GeneralDemoPage(QWidget):
 
         self.algorithm = algorithm
         if self.algorithm == "colour":
-            self.setWindowTitle("Colour Detection")
+            self.title="Colour Detection"
             self.recognizer = ColourRecognizer('Datasets/colour_ranges.csv')
-            instructions = "Hold up one of the following colours: Red, Blue, Yellow, Green, Purple" ##change this to autofill based on csv
-            description = ("The program detects colours in an image using predefined colour ranges. It "
+            self.instructions = "Hold up one of the following colours: Red, Blue, Yellow, Green, Purple" ##change this to autofill based on csv
+            self.description = ("The program detects colours in an image using predefined colour ranges. It "
                            "first creates a mask to highlight areas that match each colour. Then, it "
                            "finds the boundaries of these colour regions and draws outlines around them, "
                            "making it easy to identify and count different colours in the video.")
         elif self.algorithm == "object":
-            self.setWindowTitle("Object Detection")
-            instructions = "Hold up an object to detect and classify"
+            self.title="Object Detection"
+            self.instructions = "Hold up an object to detect and classify"
             self.recognizer = ObjectRecognizer('yolo11n.pt')
-            description = ("YOLO is a fast object detection system that processes an image by dividing "
+            self.description = ("YOLO is a fast object detection system that processes an image by dividing "
                            "it into a grid. Each grid cell predicts whether an object is present and, "
                            "if so, draws a box around it. The image passes through multiple layers of a "
                            "neural network, where early layers detect simple features like edges, while "
@@ -40,35 +40,44 @@ class GeneralDemoPage(QWidget):
                            "the detection), and class labels. This allows YOLO to quickly "
                            "and accurately detect multiple objects in an image.")
 
+        self.setup_ui()
+
+    def setup_ui(self):
+        """setup general page ui"""
+        self.setWindowTitle(self.title)
         # Main layout
-        main_layout = QHBoxLayout(self)
+        main_layout = QHBoxLayout()
 
-        # Video Stream Section (Left)
-        self.video_label = QLabel()
-        self.video_label.setObjectName("video_label")
-        self.video_label.setFixedSize(800,800)
-        self.video_label.setAlignment(Qt.AlignCenter)
-        main_layout.addWidget(self.video_label, stretch=3)
+         # Left panel for the video feed
+        left_layout = QVBoxLayout()
+        left_layout.addStretch()
+        self.video_feed = QLabel()
+        self.video_feed.setObjectName("video_feed")
+        self.video_feed.setScaledContents(True)
+        self.video_feed.setFixedSize(1100, 900)
+        self.video_feed.setAlignment(Qt.AlignCenter)
+        left_layout.addWidget(self.video_feed, alignment=Qt.AlignCenter)
+        left_layout.addStretch()
 
-        # Right Panel (Output and Description)
-        right_panel = QVBoxLayout()
+        # Right Panel (Instruction and Description)
+        right_layout = QVBoxLayout()
+        right_layout.setAlignment(Qt.AlignTop | Qt.AlignHCenter)
 
-        # Output Section
-        self.output_label = QLabel(instructions)
-        self.output_label.setObjectName("output_label")
-        self.output_label.setAlignment(Qt.AlignCenter)
-        self.output_label.setWordWrap(True)  # Allow text to wrap
-        self.adjust_output_label_height()  # Adjust height based on text
-        right_panel.addWidget(self.output_label, stretch=1)
+        #Instruction Section
+        self.instruction_label = QLabel(self.instructions)
+        self.instruction_label.setObjectName("instructions")
+        self.instruction_label.setAlignment(Qt.AlignTop |Qt.AlignCenter)
+        self.instruction_label.setWordWrap(True)  # Allow text to wrap
+        self.adjust_instructions_height()  # Adjust height based on text
 
         # Description Section
-        self.description_label = QLabel(description)
-        self.description_label.setObjectName("description_label")
-        self.output_label.setFixedWidth(800)
+        self.description_label = QLabel(self.description)
+        self.description_label.setObjectName("description")
+        self.instruction_label.setMaximumWidth(800)
         self.description_label.setWordWrap(True)
         self.description_label.setAlignment(Qt.AlignLeft | Qt.AlignTop)
-        right_panel.addWidget(self.description_label, stretch=2)
 
+        #QR
         self.qr_code=QSvgWidget("Datasets/QRcodes/rgb_QR.svg")
         self.qr_label=QLabel("Scan this to learn more about RGB cameras!")
         self.qr_code.setFixedSize(150,150)
@@ -80,11 +89,14 @@ class GeneralDemoPage(QWidget):
         qr_layout.addWidget(self.qr_code, alignment=Qt.AlignLeft)
         qr_layout.addWidget(self.qr_label, alignment=Qt.AlignHCenter)
 
-        right_panel.addStretch()
-        right_panel.addLayout(qr_layout)
+        right_layout.addWidget(self.instruction_label)
+        right_layout.addWidget(self.description_label)
+        right_layout.addStretch()
+        right_layout.addLayout(qr_layout)
 
         # Add right panel to the main layout
-        main_layout.addLayout(right_panel, stretch=2)
+        main_layout.addLayout(left_layout)
+        main_layout.addLayout(right_layout)
         self.setLayout(main_layout)
 
         # Load stylesheet
@@ -103,12 +115,12 @@ class GeneralDemoPage(QWidget):
         self.timer.timeout.connect(self.update_frame)
         self.timer.start(20)  # 20ms interval
 
-    def adjust_output_label_height(self):
+    def adjust_instructions_height(self):
         """Adjust output label height based on the text lines"""
-        font = self.output_label.font()
+        font = self.instruction_label.font()
         fm = QFontMetrics(font)
-        text_height = fm.boundingRect(self.output_label.text()).height()
-        self.output_label.setFixedHeight(text_height + 30)  # Add padding
+        text_height = fm.boundingRect(self.instruction_label.text()).height()
+        self.instruction_label.setFixedHeight(text_height + 30)  # Add padding
 
     def update_frame(self):
         """Capture and process frames for display"""
@@ -139,10 +151,10 @@ class GeneralDemoPage(QWidget):
 
         # Convert to QPixmap and SCALE to fit label size
         pixmap = QPixmap.fromImage(qimg)
-        scaled_pixmap = pixmap.scaled(self.video_label.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
+        scaled_pixmap = pixmap.scaled(self.video_feed.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
 
         # Update QLabel with scaled frame
-        self.video_label.setPixmap(scaled_pixmap)
+        self.video_feed.setPixmap(scaled_pixmap)
 
 
     def closeEvent(self, event):
