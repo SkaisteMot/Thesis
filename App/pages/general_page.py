@@ -4,6 +4,7 @@ import sys
 import cv2
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QHBoxLayout
 from PyQt5.QtGui import QPixmap, QImage
+from PyQt5.QtSvg import QSvgWidget
 
 from Algorithms.Objects.colour_detection import ColourRecognizer
 from Algorithms.Objects.object_detection import ObjectRecognizer
@@ -45,6 +46,7 @@ class GeneralDemoPage(QWidget):
         # Video Stream Section (Left)
         self.video_label = QLabel()
         self.video_label.setObjectName("video_label")
+        self.video_label.setFixedSize(800,800)
         self.video_label.setAlignment(Qt.AlignCenter)
         main_layout.addWidget(self.video_label, stretch=3)
 
@@ -62,9 +64,24 @@ class GeneralDemoPage(QWidget):
         # Description Section
         self.description_label = QLabel(description)
         self.description_label.setObjectName("description_label")
+        self.output_label.setFixedWidth(800)
         self.description_label.setWordWrap(True)
         self.description_label.setAlignment(Qt.AlignLeft | Qt.AlignTop)
         right_panel.addWidget(self.description_label, stretch=2)
+
+        self.qr_code=QSvgWidget("Datasets/QRcodes/rgb_QR.svg")
+        self.qr_label=QLabel("Scan this to learn more about RGB cameras!")
+        self.qr_code.setFixedSize(150,150)
+        self.qr_label.setObjectName("description")
+        self.qr_label.setWordWrap(True)
+        self.qr_label.setFixedSize(650,150)
+
+        qr_layout=QHBoxLayout()
+        qr_layout.addWidget(self.qr_code, alignment=Qt.AlignLeft)
+        qr_layout.addWidget(self.qr_label, alignment=Qt.AlignHCenter)
+
+        right_panel.addStretch()
+        right_panel.addLayout(qr_layout)
 
         # Add right panel to the main layout
         main_layout.addLayout(right_panel, stretch=2)

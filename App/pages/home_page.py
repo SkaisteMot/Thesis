@@ -34,7 +34,7 @@ class HomePage(QMainWindow):
         self.objectButton.clicked.connect(self.open_object_detection_page)
         self.lidarButton.clicked.connect(self.open_lidar_page)
         self.thermalButton.clicked.connect(self.open_thermal_page)
-        self.eventButton.clicked.connect(self.open_counting_page)
+        self.eventButton.clicked.connect(self.open_event_page)
 
         #Button Tooltips
         self.handGestureButton.setToolTip("Recognize hand signs and display equivalent emoji")
@@ -132,12 +132,11 @@ class HomePage(QMainWindow):
         self.thermal_page=ThermalCameraPage()
         self.thermal_page.showMaximized()
 
-    def open_counting_page(self):
+    def open_event_page(self):
         """show and run event camera high speed counting page/alg"""
         self.close_other_pages()
         self.event_page=EventCameraPage()
-        self.event_page.show()
-        print("Event Camera Counting demo selected.")
+        self.event_page.showMaximized()
 
     def close_other_pages(self):
         """"close all other pages before opening another"""

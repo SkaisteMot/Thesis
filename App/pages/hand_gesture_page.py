@@ -55,7 +55,7 @@ class HandGestureRecognitionPage(QWidget):
         self.left_instruction.setAlignment(Qt.AlignCenter)  # Centering instruction text
         self.left_instruction.setWordWrap(True)
         self.left_instruction.setMaximumWidth(500)
-        self.left_instruction.setFixedSize(500,100)
+        self.left_instruction.setFixedSize(500,200)
         self.left_instruction.setObjectName("instructions")
 
         self.qr_code=QSvgWidget("Datasets/QRcodes/rgb_QR.svg")

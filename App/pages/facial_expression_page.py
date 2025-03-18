@@ -3,6 +3,7 @@ import cv2
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QHBoxLayout, QSpacerItem, QSizePolicy
 from PyQt5.QtGui import QPixmap, QImage
 from PyQt5.QtCore import QTimer, Qt
+from PyQt5.QtSvg import QSvgWidget
 
 from Algorithms.Body.emotion_recognition import EmotionRecognizer
 from utils import load_stylesheet, close_event
@@ -57,7 +58,7 @@ class FacialExpressionRecognitionPage(QWidget):
         self.video_feed = QLabel()
         self.video_feed.setObjectName("video_feed")
         self.video_feed.setScaledContents(True)
-        self.video_feed.setFixedSize(800, 800)
+        self.video_feed.setFixedSize(900, 900)
         self.video_feed.setAlignment(Qt.AlignCenter)
         left_layout.addWidget(self.video_feed, alignment=Qt.AlignCenter)
         left_layout.addStretch()
@@ -79,6 +80,18 @@ class FacialExpressionRecognitionPage(QWidget):
         self.face_emoji.setScaledContents(True)
         self.face_emoji.setAlignment(Qt.AlignCenter)
 
+        
+        self.qr_code=QSvgWidget("Datasets/QRcodes/rgb_QR.svg")
+        self.qr_label=QLabel("Scan this to learn more about RGB cameras!")
+        self.qr_code.setFixedSize(150,150)
+        self.qr_label.setObjectName("description")
+        self.qr_label.setWordWrap(True)
+        self.qr_label.setFixedSize(750,150)
+
+        qr_layout=QHBoxLayout()
+        qr_layout.addWidget(self.qr_code, alignment=Qt.AlignLeft)
+        qr_layout.addWidget(self.qr_label, alignment=Qt.AlignHCenter)
+
         emoji_layout.addWidget(self.emoji_label)
         emoji_layout.addWidget(self.face_emoji)
         right_layout.addLayout(emoji_layout)
@@ -93,8 +106,10 @@ class FacialExpressionRecognitionPage(QWidget):
         self.description.setAlignment(Qt.AlignTop | Qt.AlignCenter)
         self.description.setObjectName("description")
         self.description.setWordWrap(True)
-        self.description.setMaximumWidth(600)
+        self.description.setMaximumWidth(900)
         right_layout.addWidget(self.description, alignment=Qt.AlignTop | Qt.AlignLeft)
+        right_layout.addStretch()
+        right_layout.addLayout(qr_layout)
 
         main_layout.addLayout(left_layout)
         main_layout.addLayout(right_layout)

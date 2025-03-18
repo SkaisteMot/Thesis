@@ -17,9 +17,9 @@ QWidget {
 }
 
 #description_label {
-    padding-top: 40px;
-    font-size: 18px;
+    font-size: 24px;
     font-weight: normal;
     text-align: left;
     color:black;
+    padding: 20
 }

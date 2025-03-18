@@ -28,7 +28,7 @@ QWidget {
 }
 
 #instructions {
-    font-size: 18px;
+    font-size: 24px;
     font-weight: normal;
     text-align: left;
     color:black;
