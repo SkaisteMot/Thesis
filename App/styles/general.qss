@@ -4,8 +4,6 @@ QWidget {
 
 #video_feed {
     background-color: black;
-    min-width: 400px;
-    min-height: 300px;
 }
 
 #instructions {

@@ -54,7 +54,7 @@ class GeneralDemoPage(QWidget):
         self.video_feed = QLabel()
         self.video_feed.setObjectName("video_feed")
         self.video_feed.setScaledContents(True)
-        self.video_feed.setFixedSize(1100, 900)
+        self.video_feed.setFixedSize(900, 900)
         self.video_feed.setAlignment(Qt.AlignCenter)
         left_layout.addWidget(self.video_feed, alignment=Qt.AlignCenter)
         left_layout.addStretch()
@@ -136,26 +136,27 @@ class GeneralDemoPage(QWidget):
 
         self.failed_frames = 0  # Reset counter on successful capture
 
-        # Apply the selected algorithm
+        # Resize frame to match QLabel's minimum size
+        frame = cv2.resize(frame, (self.video_feed.width(), self.video_feed.height()), interpolation=cv2.INTER_LINEAR)
+
+        # Apply processing
         if self.algorithm == "colour":
             processed_frame = self.recognizer.detect_and_draw(frame)
         elif self.algorithm == "object":
             processed_frame = self.recognizer.detect_and_draw(frame)
         else:
-            processed_frame = frame  # Fallback to original frame
+            processed_frame = frame
 
-        # Convert processed frame to QImage
+        # Convert to QImage
         height, width, channels = processed_frame.shape
         bytes_per_line = channels * width
         qimg = QImage(processed_frame.data, width, height, bytes_per_line, QImage.Format_BGR888)
 
-        # Convert to QPixmap and SCALE to fit label size
+        # Directly assign without scaling first
         pixmap = QPixmap.fromImage(qimg)
-        scaled_pixmap = pixmap.scaled(self.video_feed.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
+        self.video_feed.setPixmap(pixmap)
 
-        # Update QLabel with scaled frame
-        self.video_feed.setPixmap(scaled_pixmap)
-
+        print(f"Updated Frame Size: {width}x{height} | QLabel Size: {self.video_feed.width()}x{self.video_feed.height()}")
 
     def closeEvent(self, event):
         """Handle window close event to release resources"""

@@ -81,7 +81,11 @@ class PlotCanvas(vispy.scene.SceneCanvas):
         else:
             print("No LiDAR data available at the moment.")
 
+import cepton_sdk
+
 class LidarCameraPage(QWidget):
+    _is_initialized = False  # Class-level flag to track SDK initialization
+
     def __init__(self):
         super().__init__()
         self.setWindowTitle("LiDAR Camera Stream")
@@ -93,10 +97,16 @@ class LidarCameraPage(QWidget):
         # Left side: LiDAR feed
         self.video_layout = QVBoxLayout()
         
-        # Initialize Cepton SDK and start the LiDAR stream
-        cepton_sdk.initialize(enable_wait=True)
+        # ✅ Check if SDK is already initialized
+        if not LidarCameraPage._is_initialized:
+            print("Initializing Cepton SDK...")
+            cepton_sdk.initialize(enable_wait=True)
+            LidarCameraPage._is_initialized = True  # Set flag to prevent reinitialization
+        else:
+            print("Cepton SDK already initialized.")
+
         self.sensor = cepton_sdk.Sensor.create_by_index(0)
-        print("Sensor Information:", self.sensor.information.to_dict())
+        #print("Sensor Information:", self.sensor.information.to_dict())
 
         # Initialize canvas to display LiDAR stream and embed in PyQt
         self.canvas = PlotCanvas(sensor=self.sensor)
@@ -111,7 +121,6 @@ class LidarCameraPage(QWidget):
         self.info_layout = QVBoxLayout()
         self.title_label = QLabel("LiDAR Camera Stream")
         self.title_label.setAlignment(Qt.AlignCenter)
-        self.title_label.setObjectName("title_label")
 
         self.description_label = QLabel("LiDAR (Light Detection and Ranging) works by emitting laser "
                                         "pulses and measuring the time it takes for them to bounce back "
@@ -124,14 +133,13 @@ class LidarCameraPage(QWidget):
                                         "foggy conditions.")
         self.description_label.setWordWrap(True)
         self.description_label.setAlignment(Qt.AlignCenter)
-        self.description_label.setObjectName("description_label")
 
         self.info_layout.addWidget(self.title_label)
         self.info_layout.addWidget(self.description_label)
         self.info_layout.addStretch()
 
         # Add sections to main layout
-        self.main_layout.addLayout(self.video_layout, 2)  # Give more space to the LiDAR view
+        self.main_layout.addLayout(self.video_layout, 2)
         self.main_layout.addLayout(self.info_layout, 1)
         self.setLayout(self.main_layout)
 

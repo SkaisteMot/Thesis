@@ -124,7 +124,7 @@ class HomePage(QMainWindow):
         """show and run lidar page"""
         self.close_other_pages()
         self.lidar_page=LidarCameraPage()
-        self.lidar_page.show()
+        self.lidar_page.showMaximized()
 
     def open_thermal_page(self):
         """show and run thermal page"""
