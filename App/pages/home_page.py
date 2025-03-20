@@ -73,7 +73,7 @@ class HomePage(QMainWindow):
         lidar_connected = self.device_checker.get_status("169.254.65.122")
         thermal_connected = self.device_checker.get_status("192.168.2.1")
         event_connected = self.device_checker.get_status("169.254.10.1")
-              
+
         # Update status indicators
         self.rgbCircle.setPixmap(self.draw_circle("green" if rgb_connected else "red"))
         self.lidarCircle.setPixmap(self.draw_circle("green" if lidar_connected else "red"))
@@ -145,7 +145,7 @@ class HomePage(QMainWindow):
             self.object_detection_page.close()
             self.object_detection_page=None
 
-    def close_event(self, event):
+    def closeEvent(self, event):
         """
         Popup to confirm exiting of app,
         Ensure the entire application closes when the home page is closed.
