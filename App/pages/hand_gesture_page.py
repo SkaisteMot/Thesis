@@ -13,13 +13,13 @@ class HandGestureRecognitionPage(QWidget):
     def __init__(self):
         super().__init__()
         self.icon_paths = {
-            'Thumb_Up': 'Datasets/HandIcons/thumbs_up.svg',
-            'Thumb_Down': 'Datasets/HandIcons/thumbs_down.svg',
-            'Pointing_Up': 'Datasets/HandIcons/point_up.svg',
-            'Victory': 'Datasets/HandIcons/peace.svg',
-            'Closed_Fist': 'Datasets/HandIcons/fist.svg',
-            'Open_Palm': 'Datasets/HandIcons/wave.svg',
-            'ILoveYou': 'Datasets/HandIcons/rock.svg'
+            'Thumb_Up': 'Datasets/HandIcons/thumbs_up.png',
+            'Thumb_Down': 'Datasets/HandIcons/thumbs_down.png',
+            'Pointing_Up': 'Datasets/HandIcons/point_up.png',
+            'Victory': 'Datasets/HandIcons/peace.png',
+            'Closed_Fist': 'Datasets/HandIcons/fist.png',
+            'Open_Palm': 'Datasets/HandIcons/wave.png',
+            'ILoveYou': 'Datasets/HandIcons/rock.png'
         }
 
         self.blank_pixmap = QPixmap(200, 200)
