@@ -5,9 +5,9 @@ import time
 import threading
 import pygetwindow as gw
 import pyautogui
-from PyQt5.QtWidgets import QWidget, QHBoxLayout, QLabel
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel
 from PyQt5.QtCore import QTimer, Qt
-from utils import load_stylesheet, close_event
+from utils import load_stylesheet, close_event,QRCodeWidget
 
 class EventCameraPage(QWidget):
     """Prophesee Viewer Integration Page with Auto-Start"""
@@ -28,7 +28,7 @@ class EventCameraPage(QWidget):
         # Load stylesheet
         load_stylesheet(self, "App/styles/sensors.qss")
 
-        self.layout = QHBoxLayout()  # Horizontal layout
+        self.layout = QVBoxLayout()  # Horizontal layout
         self.layout.setAlignment(Qt.AlignRight)  # Align everything to the right
 
         self.status_label = QLabel("Starting Event Camera Stream...")
@@ -48,9 +48,15 @@ class EventCameraPage(QWidget):
         self.description.setWordWrap(True)
         self.description.setObjectName("description")
 
+        self.qr_widget=QRCodeWidget("Datasets/QRcodes/event_QR.svg",
+                                    "Scan this to learn more about event cameras!",
+                                     label_width=800)
+
         self.layout.addWidget(self.status_label)
         self.layout.addWidget(self.description)
-
+        self.layout.addStretch()
+        self.layout.addWidget(self.qr_widget)
+        
         # Set layout
         container = QWidget()
         container.setLayout(self.layout)

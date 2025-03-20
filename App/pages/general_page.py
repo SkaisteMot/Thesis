@@ -1,14 +1,12 @@
 """Page that is used when only a stream is outputted, object detection, colour detection etc"""
-from os import close
 import sys
 import cv2
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QHBoxLayout
 from PyQt5.QtGui import QPixmap, QImage,QFontMetrics
-from PyQt5.QtSvg import QSvgWidget
 from PyQt5.QtCore import QTimer, Qt
 from Algorithms.Objects.colour_detection import ColourRecognizer
 from Algorithms.Objects.object_detection import ObjectRecognizer
-from utils import load_stylesheet,close_event
+from utils import load_stylesheet,close_event,QRCodeWidget
 
 class GeneralDemoPage(QWidget):
     """Page used for general display of streams"""
@@ -68,7 +66,7 @@ class GeneralDemoPage(QWidget):
         self.instruction_label.setObjectName("instructions")
         self.instruction_label.setAlignment(Qt.AlignTop |Qt.AlignCenter)
         self.instruction_label.setWordWrap(True)  # Allow text to wrap
-        self.instruction_label.setMaximumWidth(800)
+        self.instruction_label.setMaximumWidth(950)
         self.adjust_instructions_height()  # Adjust height based on text
 
         # Description Section
@@ -79,21 +77,14 @@ class GeneralDemoPage(QWidget):
         self.description_label.setAlignment(Qt.AlignLeft | Qt.AlignTop)
 
         #QR
-        self.qr_code=QSvgWidget("Datasets/QRcodes/rgb_QR.svg")
-        self.qr_label=QLabel("Scan this to learn more about RGB cameras!")
-        self.qr_code.setFixedSize(150,150)
-        self.qr_label.setObjectName("description")
-        self.qr_label.setWordWrap(True)
-        self.qr_label.setFixedSize(650,150)
-
-        qr_layout=QHBoxLayout()
-        qr_layout.addWidget(self.qr_code, alignment=Qt.AlignLeft)
-        qr_layout.addWidget(self.qr_label, alignment=Qt.AlignHCenter)
+        self.qr_widget=QRCodeWidget("Datasets/QRcodes/rgb_QR.svg",
+                                    "Scan this to learn more about RGB cameras!",
+                                    label_width=800)
 
         right_layout.addWidget(self.instruction_label)
         right_layout.addWidget(self.description_label)
         right_layout.addStretch()
-        right_layout.addLayout(qr_layout)
+        right_layout.addWidget(self.qr_widget)
 
         # Add right panel to the main layout
         main_layout.addLayout(left_layout)
@@ -121,7 +112,7 @@ class GeneralDemoPage(QWidget):
         font = self.instruction_label.font()
         fm = QFontMetrics(font)
         text_height = fm.boundingRect(self.instruction_label.text()).height()
-        self.instruction_label.setFixedHeight(text_height + 30)  # Add padding
+        self.instruction_label.setFixedHeight(text_height + 50)  # Add padding
 
     def update_frame(self):
         """Capture and process frames for display"""

@@ -7,7 +7,7 @@ from PyQt5.QtCore import QTimer, Qt
 import cepton_sdk
 import matplotlib.pyplot as plt
 from cepton_sdk.common import *
-from utils import load_stylesheet
+from utils import load_stylesheet,QRCodeWidget
 
 _all_builder = AllBuilder(__name__)
 
@@ -140,9 +140,14 @@ class LidarCameraPage(QWidget):
         self.description_label.setObjectName("description")
         self.description_label.setAlignment(Qt.AlignCenter)
 
+        self.qr_widget=QRCodeWidget("Datasets/QRcodes/lidar_QR.svg",
+                                    "Scan this to learn more about LiDAR sensors!",
+                                    label_width=800)
+
         self.info_layout.addWidget(self.title_label)
         self.info_layout.addWidget(self.description_label)
         self.info_layout.addStretch()
+        self.info_layout.addWidget(self.qr_widget)
 
         # Add sections to main layout
         self.main_layout.addLayout(self.video_layout, 2)

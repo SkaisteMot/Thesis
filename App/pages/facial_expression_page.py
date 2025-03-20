@@ -3,10 +3,8 @@ import cv2
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QHBoxLayout
 from PyQt5.QtGui import QPixmap, QImage, QFont
 from PyQt5.QtCore import QTimer, Qt
-from PyQt5.QtSvg import QSvgWidget
-
 from Algorithms.Body.emotion_recognition import EmotionRecognizer
-from utils import load_stylesheet, close_event
+from utils import load_stylesheet, close_event, QRCodeWidget
 
 class FacialExpressionRecognitionPage(QWidget):
     """Emotion Recognition"""
@@ -96,24 +94,16 @@ class FacialExpressionRecognitionPage(QWidget):
         self.description.setWordWrap(True)
         self.description.setMaximumWidth(900)
 
-        #QR stuff
-        self.qr_code=QSvgWidget("Datasets/QRcodes/rgb_QR.svg")
-        self.qr_label=QLabel("Scan this to learn more about RGB cameras!")
-        self.qr_code.setFixedSize(150,150)
-        self.qr_label.setObjectName("description")
-        self.qr_label.setWordWrap(True)
-        self.qr_label.setFixedSize(750,150)
-
-        qr_layout=QHBoxLayout()
-        qr_layout.addWidget(self.qr_code, alignment=Qt.AlignLeft)
-        qr_layout.addWidget(self.qr_label, alignment=Qt.AlignHCenter)
+        self.qr_widget=QRCodeWidget("Datasets/QRcodes/rgb_QR.svg",
+                                    "Scan this to learn more about RGB cameras!",
+                                    label_width=750)
 
         emoji_layout.addWidget(self.emoji_label)
         emoji_layout.addWidget(self.face_emoji)
         right_layout.addLayout(emoji_layout)
         right_layout.addWidget(self.description, alignment=Qt.AlignTop | Qt.AlignLeft)
         right_layout.addStretch()
-        right_layout.addLayout(qr_layout)
+        right_layout.addWidget(self.qr_widget)
 
         main_layout.addLayout(left_layout)
         main_layout.addLayout(right_layout)

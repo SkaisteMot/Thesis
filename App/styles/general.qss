@@ -8,7 +8,7 @@ QWidget {
 
 #instructions {
     background-color: lightgray;
-    font-size: 16px;
+    font-size: 24px;
     padding: 10px;
     text-align: center;
     height: 150px;

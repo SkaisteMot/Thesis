@@ -74,5 +74,6 @@ class GestureRecognizer:
         return frame
 
     def release(self):
+        """release resources"""
         self.cap.release()
         cv2.destroyAllWindows()

@@ -3,10 +3,8 @@ import cv2
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QHBoxLayout
 from PyQt5.QtGui import QPixmap, QImage, QFont
 from PyQt5.QtCore import QTimer, Qt
-from PyQt5.QtSvg import QSvgWidget
-
 from Algorithms.Body.hand_gesture_test import GestureRecognizer
-from utils import load_stylesheet,close_event
+from utils import load_stylesheet,close_event, QRCodeWidget
 
 class HandGestureRecognitionPage(QWidget):
     """Hand gesture recognizer"""
@@ -59,22 +57,15 @@ class HandGestureRecognitionPage(QWidget):
         self.left_instruction.setFixedSize(500,200)
         self.left_instruction.setObjectName("instructions")
 
-        self.qr_code=QSvgWidget("Datasets/QRcodes/rgb_QR.svg")
-        self.qr_label=QLabel("Scan this to learn more about RGB cameras!")
-        self.qr_code.setFixedSize(150,150)
-        self.qr_label.setObjectName("instructions")
-        self.qr_label.setWordWrap(True)
-        self.qr_label.setFixedSize(350,150)
-
-        qr_layout=QHBoxLayout()
-        qr_layout.addWidget(self.qr_code, alignment=Qt.AlignLeft)
-        qr_layout.addWidget(self.qr_label, alignment=Qt.AlignHCenter)
+        self.qr_widget = QRCodeWidget("Datasets/QRcodes/rgb_QR.svg",
+                                      "Scan this to learn more about RGB cameras!",
+                                      label_width=350)
 
         left_layout.addWidget(self.left_label, alignment=Qt.AlignHCenter)
         left_layout.addWidget(self.left_emoji, alignment=Qt.AlignHCenter)
         left_layout.addWidget(self.left_instruction, alignment=Qt.AlignHCenter)
         left_layout.addStretch()
-        left_layout.addLayout(qr_layout)
+        left_layout.addWidget(self.qr_widget)
 
         # Center video feed
         self.video_feed = QLabel()
