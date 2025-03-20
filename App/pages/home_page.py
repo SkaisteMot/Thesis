@@ -7,9 +7,9 @@ from PyQt5 import uic
 from App.pages.hand_gesture_page import HandGestureRecognitionPage
 from App.pages.facial_expression_page import FacialExpressionRecognitionPage
 from App.pages.general_page import GeneralDemoPage
-from App.pages.thermalTest import ThermalCameraPage
-from App.pages.eventTest import EventCameraPage
-from App.pages.lidarTest import LidarCameraPage
+from App.pages.thermal_page import ThermalCameraPage
+from App.pages.event_page import EventCameraPage
+from App.pages.lidar_page import LidarCameraPage
 from utils import load_stylesheet, DeviceStatusChecker
 
 class HomePage(QMainWindow):
