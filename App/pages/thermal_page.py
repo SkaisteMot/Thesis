@@ -100,14 +100,14 @@ class ThermalCameraPage(QWidget):
             rgb_image = cv2.cvtColor(cv_img, cv2.COLOR_BGR2RGB)
             qt_image = QImage(rgb_image.data, w, h, ch * w, QImage.Format_RGB888)
         return QPixmap.fromImage(qt_image)
-            
+                
     def release(self):
         """Release resources properly"""
         if hasattr(self, "timer") and self.timer.isActive():
             self.timer.stop()
         if self.cap and self.cap.isOpened():
             self.cap.release()
-                
+            
     def use_close_event(self, event):
         """Handle close event to release resources"""
         close_event(event, self)

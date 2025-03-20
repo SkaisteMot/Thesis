@@ -1,3 +1,4 @@
+"""facial expression/emotion recognition algorithm"""
 from dataclasses import dataclass
 from typing import Optional
 import cv2
@@ -6,6 +7,7 @@ from fer import FER
 
 @dataclass
 class EmotionResult:
+    """return the main frame from stream and the detected emotion text"""
     main_frame: np.ndarray
     emotion_text: str
 
@@ -48,5 +50,6 @@ class EmotionRecognizer:
         return EmotionResult(main_frame=frame, emotion_text=dominant_emotion)
 
     def release(self):
+        """release resources"""
         self.cap.release()
         cv2.destroyAllWindows()

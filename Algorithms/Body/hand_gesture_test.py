@@ -9,6 +9,7 @@ from mediapipe.tasks.python import vision
 
 @dataclass
 class GestureResult:
+    """return the frame, and detected gesture labels"""
     main_frame: np.ndarray
     left_label: str
     right_label: str
@@ -20,7 +21,8 @@ class GestureRecognizer:
         self.cap = cv2.VideoCapture(0)
 
     def _setup_recognizer(self):
-        base_options = python.BaseOptions(model_asset_path='Algorithms/Body/gesture_recognizer.task')
+        base_options = python.BaseOptions(
+            model_asset_path='Algorithms/Body/gesture_recognizer.task')
         options = vision.GestureRecognizerOptions(base_options=base_options, num_hands=2)
         return vision.GestureRecognizer.create_from_options(options)
 
@@ -36,7 +38,8 @@ class GestureRecognizer:
 
         gestures_and_landmarks = []
         if recognition_result.gestures:
-            for hand_gestures, hand_landmarks in zip(recognition_result.gestures, recognition_result.hand_landmarks):
+            for hand_gestures, hand_landmarks in zip(recognition_result.gestures,
+                                                     recognition_result.hand_landmarks):
                 gestures_and_landmarks.append((hand_gestures, hand_landmarks))
 
         frame_with_landmarks = self._draw_landmarks(frame.copy(), gestures_and_landmarks)

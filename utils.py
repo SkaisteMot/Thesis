@@ -1,7 +1,12 @@
-def load_stylesheet(window,styleSheetPath):
-        """Load the stylesheet for the page."""
-        with open(styleSheetPath, "r") as file:
-            window.setStyleSheet(file.read())
+"""helper functions used throughout"""
+import socket
+import threading
+import time
+
+def load_stylesheet(window,style_sheet_path):
+    """Load the stylesheet for the page."""
+    with open(style_sheet_path, "r") as file:
+        window.setStyleSheet(file.read())
 
 def close_event(event, widget):
     """Handle cleanup when closing a page"""
@@ -11,11 +16,6 @@ def close_event(event, widget):
         widget.timer.stop()
     event.accept()
 
-import socket
-import threading
-import time
-from functools import lru_cache
-
 class DeviceStatusChecker:
     def __init__(self):
         self.device_statuses = {}
@@ -24,12 +24,12 @@ class DeviceStatusChecker:
         self._stop_event = threading.Event()
         self._thread = threading.Thread(target=self._background_check, daemon=True)
         self._thread.start()
-    
+
     def _background_check(self):
         while not self._stop_event.is_set():
             self._update_all_statuses()
             time.sleep(self.check_interval)
-    
+
     def _update_all_statuses(self):
         devices = {
             "169.254.186.74": False,  # RGB
@@ -55,7 +55,7 @@ class DeviceStatusChecker:
             return result == 0
         except:
             return False
-    
+            
     def get_status(self, ip):
         """Get the current status of a device."""
         with self.status_lock:

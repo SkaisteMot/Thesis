@@ -7,7 +7,6 @@ https://www.geeksforgeeks.org/object-detection-using-yolov8/
 https://medium.com/softplus-publication/video-object-tracking-with-yolov8-and-sort-library-e28444b189aa
 """
 from ultralytics import YOLO
-import numpy as np
 
 class ObjectRecognizer:
     """Object Recognizer called from UI"""
@@ -21,7 +20,7 @@ class ObjectRecognizer:
         if results:
             result = results[0]  # Extract first result
             confs = result.boxes.conf.cpu().numpy()  # Get confidence scores as NumPy array
-            
+
             # Filter out boxes below 50% confidence
             mask = confs >= 0.5
             result.boxes = result.boxes[mask]  # Apply mask to filter boxes
@@ -29,4 +28,3 @@ class ObjectRecognizer:
             return result.plot()
 
         return frame  # Return original frame if no detections
-
