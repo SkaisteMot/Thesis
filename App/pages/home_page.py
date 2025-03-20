@@ -45,13 +45,6 @@ class HomePage(QMainWindow):
         self.thermalButton.setToolTip("Demonstrate the temperatures in a frame")
         self.eventButton.setToolTip("Detect only movement in a frame")
 
-        self.qr_code_label = QSvgWidget("Datasets/QRcodes/feedback_form.svg", self)  # Load the SVG file
-        self.qr_code_label.setGeometry(1000, 100, 150, 150)  # Position and size
-
-        self.qr_label=QLabel("Feedback form",self)
-        self.qr_label.setGeometry(1000,250,150,50)
-        self.qr_label.setAlignment(Qt.AlignCenter)
-
         # Initialize status indicators
         self.set_status_to_searching()
         self.device_checker = DeviceStatusChecker()
