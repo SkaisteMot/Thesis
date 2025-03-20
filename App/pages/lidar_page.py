@@ -106,7 +106,7 @@ class LidarCameraPage(QWidget):
             print("Cepton SDK already initialized.")
 
         self.sensor = cepton_sdk.Sensor.create_by_index(0)
-        #print("Sensor Information:", self.sensor.information.to_dict())
+        #print("Sensor Information:", self.sensor.information.to_dict()) 
 
         # Initialize canvas to display LiDAR stream and embed in PyQt
         self.canvas = PlotCanvas(sensor=self.sensor)
@@ -145,7 +145,6 @@ class LidarCameraPage(QWidget):
 
     def closeEvent(self, event):
         """Handle close event"""
-        print("LiDAR page is closing.")
         if hasattr(self, 'canvas') and hasattr(self.canvas, 'timer'):
             self.canvas.timer.stop()
         event.accept()

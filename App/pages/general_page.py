@@ -156,8 +156,6 @@ class GeneralDemoPage(QWidget):
         pixmap = QPixmap.fromImage(qimg)
         self.video_feed.setPixmap(pixmap)
 
-        print(f"Updated Frame Size: {width}x{height} | QLabel Size: {self.video_feed.width()}x{self.video_feed.height()}")
-
     def closeEvent(self, event):
         """Handle window close event to release resources"""
         self.cap.release()
