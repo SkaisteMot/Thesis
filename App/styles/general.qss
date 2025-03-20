@@ -19,5 +19,5 @@ QWidget {
     font-weight: normal;
     text-align: left;
     color:black;
-    padding: 20
+    padding: 20px;
 }

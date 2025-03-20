@@ -95,7 +95,7 @@ class HandGestureRecognitionPage(QWidget):
         self.right_instruction = QLabel("Hand gesture recognition starts with detecting hands in the camera frame using a palm detection model."
                                         " Once a hand is found, a landmark model identifies 21 key points, including fingertips, knuckles, and the wrist."
                                         " These key points are then analyzed to classify different gestures based on their positions and movements.")
-        self.right_instruction.setAlignment(Qt.AlignCenter)  # Centering instruction text
+        self.right_instruction.setAlignment(Qt.AlignLeft)  # Centering instruction text
         self.right_instruction.setWordWrap(True)
         self.right_instruction.setMaximumWidth(500)
         self.right_instruction.setObjectName("instructions")

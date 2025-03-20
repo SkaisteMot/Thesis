@@ -10,7 +10,6 @@ class ThermalCameraPage(QWidget):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Thermal Camera Stream")
-        self.setGeometry(100, 100, 800, 600)
 
         # Main layout (horizontal split)
         self.main_layout = QHBoxLayout()
@@ -27,7 +26,7 @@ class ThermalCameraPage(QWidget):
         self.info_layout = QVBoxLayout()
         self.title_label = QLabel("Thermal Camera Stream")
         self.title_label.setAlignment(Qt.AlignCenter)
-        self.title_label.setObjectName("title_label")
+        self.title_label.setObjectName("title")
         
         self.description_label = QLabel("Thermal (infrared) cameras detect heat instead of "
                                         "visible light. Every object emits infrared radiation based "
@@ -42,7 +41,7 @@ class ThermalCameraPage(QWidget):
                                         "like night vision, search and rescue, and industrial inspections.")
         self.description_label.setWordWrap(True)
         self.description_label.setAlignment(Qt.AlignCenter)
-        self.description_label.setObjectName("description_label")
+        self.description_label.setObjectName("description")
         
         self.info_layout.addWidget(self.title_label)
         self.info_layout.addWidget(self.description_label)
@@ -54,7 +53,7 @@ class ThermalCameraPage(QWidget):
         self.setLayout(self.main_layout)
 
         # Load stylesheet
-        #load_stylesheet(self, "App/styles/thermal_camera.qss")
+        load_stylesheet(self, "App/styles/sensors.qss")
         
         # Initialize the RTSP stream
         self.rtsp_url = "rtsp://admin:valeo123@192.168.2.64:554/Streaming/Channels/101/"

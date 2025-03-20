@@ -25,6 +25,9 @@ class EventCameraPage(QWidget):
 
     def setup_ui(self):
         """Setup UI"""
+        # Load stylesheet
+        load_stylesheet(self, "App/styles/sensors.qss")
+
         self.layout = QHBoxLayout()  # Horizontal layout
         self.layout.setAlignment(Qt.AlignRight)  # Align everything to the right
 
@@ -42,6 +45,7 @@ class EventCameraPage(QWidget):
                                 "challenging lighting conditions. Inspired by the human eye, they efficiently"
                                 " capture dynamic scenes with minimal data redundancy.")
         self.description.setWordWrap(True)
+        self.description.setObjectName("description")
 
         self.layout.addWidget(self.status_label)
         self.layout.addWidget(self.description)

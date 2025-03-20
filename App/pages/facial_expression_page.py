@@ -87,7 +87,7 @@ class FacialExpressionRecognitionPage(QWidget):
                                   " face in the camera frame. Key facial landmarks, such as the eyes, eyebrows, nose, and mouth, are then "
                                   "identified. The system analyzes the positions and movements of these landmarks to classify expressions"
                                   " like happiness, sadness, anger, or surprise.")
-        self.description.setAlignment(Qt.AlignTop | Qt.AlignCenter)
+        self.description.setAlignment(Qt.AlignTop | Qt.AlignLeft)
         self.description.setObjectName("description")
         self.description.setWordWrap(True)
         self.description.setMaximumWidth(900)

@@ -8,6 +8,7 @@ import cepton_sdk
 import cv2
 import matplotlib.pyplot as plt
 from cepton_sdk.common import *
+from utils import load_stylesheet
 
 _all_builder = AllBuilder(__name__)
 
@@ -89,7 +90,9 @@ class LidarCameraPage(QWidget):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("LiDAR Camera Stream")
-        self.setGeometry(100, 100, 800, 600)
+
+        # Load stylesheet
+        load_stylesheet(self, "App/styles/sensors.qss")
 
         # Main layout (horizontal split)
         self.main_layout = QHBoxLayout()
@@ -121,6 +124,7 @@ class LidarCameraPage(QWidget):
         self.info_layout = QVBoxLayout()
         self.title_label = QLabel("LiDAR Camera Stream")
         self.title_label.setAlignment(Qt.AlignCenter)
+        self.title_label.setObjectName("title")
 
         self.description_label = QLabel("LiDAR (Light Detection and Ranging) works by emitting laser "
                                         "pulses and measuring the time it takes for them to bounce back "
@@ -132,6 +136,7 @@ class LidarCameraPage(QWidget):
                                         "because it provides precise depth information, even in low light or "
                                         "foggy conditions.")
         self.description_label.setWordWrap(True)
+        self.description_label.setObjectName("description")
         self.description_label.setAlignment(Qt.AlignCenter)
 
         self.info_layout.addWidget(self.title_label)
