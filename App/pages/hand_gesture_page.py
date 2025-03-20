@@ -1,7 +1,7 @@
 """page for hand gesture detection, opened from home_page.py button"""
 import cv2
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QHBoxLayout
-from PyQt5.QtGui import QPixmap, QImage
+from PyQt5.QtGui import QPixmap, QImage, QFont
 from PyQt5.QtCore import QTimer, Qt
 from PyQt5.QtSvg import QSvgWidget
 
@@ -54,6 +54,7 @@ class HandGestureRecognitionPage(QWidget):
                                     "(Thumbs up, Thumbs down, Peace, Point up, Wave, Rock )")
         self.left_instruction.setAlignment(Qt.AlignCenter)  # Centering instruction text
         self.left_instruction.setWordWrap(True)
+        self.left_instruction.setFont(QFont("Segoe UI Emoji"))
         self.left_instruction.setMaximumWidth(500)
         self.left_instruction.setFixedSize(500,200)
         self.left_instruction.setObjectName("instructions")

@@ -1,7 +1,7 @@
 """Facial expression page opened from home_Page.ui"""
 import cv2
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QHBoxLayout, QSpacerItem, QSizePolicy
-from PyQt5.QtGui import QPixmap, QImage
+from PyQt5.QtGui import QPixmap, QImage, QFont
 from PyQt5.QtCore import QTimer, Qt
 from PyQt5.QtSvg import QSvgWidget
 
@@ -88,6 +88,7 @@ class FacialExpressionRecognitionPage(QWidget):
                                   "identified. The system analyzes the positions and movements of these landmarks to classify expressions"
                                   " like happiness, sadness, anger, or surprise.")
         self.description.setAlignment(Qt.AlignTop | Qt.AlignLeft)
+        self.description.setFont(QFont("Segoe UI Emoji"))
         self.description.setObjectName("description")
         self.description.setWordWrap(True)
         self.description.setMaximumWidth(900)
