@@ -1,8 +1,7 @@
 """Application Home page, contains general description and buttons that lead to relevant algs"""
-from PyQt5.QtWidgets import QMainWindow, QApplication, QMessageBox,QLabel
+from PyQt5.QtWidgets import QMainWindow, QApplication, QMessageBox
 from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtGui import QPixmap, QPainter, QColor
-from PyQt5.QtSvg import QSvgWidget
 from PyQt5 import uic
 from App.pages.hand_gesture_page import HandGestureRecognitionPage
 from App.pages.facial_expression_page import FacialExpressionRecognitionPage
@@ -74,7 +73,7 @@ class HomePage(QMainWindow):
         lidar_connected = self.device_checker.get_status("169.254.65.122")
         thermal_connected = self.device_checker.get_status("192.168.2.1")
         event_connected = self.device_checker.get_status("169.254.10.1")
-        
+              
         # Update status indicators
         self.rgbCircle.setPixmap(self.draw_circle("green" if rgb_connected else "red"))
         self.lidarCircle.setPixmap(self.draw_circle("green" if lidar_connected else "red"))
@@ -146,7 +145,7 @@ class HomePage(QMainWindow):
             self.object_detection_page.close()
             self.object_detection_page=None
 
-    def closeEvent(self, event):
+    def close_event(self, event):
         """
         Popup to confirm exiting of app,
         Ensure the entire application closes when the home page is closed.

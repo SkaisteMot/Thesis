@@ -93,9 +93,13 @@ class HandGestureRecognitionPage(QWidget):
         self.right_emoji.setAlignment(Qt.AlignCenter)
         self.right_emoji.setFixedSize(400, 400)  # Ensure emoji box is square
 
-        self.right_instruction = QLabel("Hand gesture recognition starts with detecting hands in the camera frame using a palm detection model."
-                                        " Once a hand is found, a landmark model identifies 21 key points, including fingertips, knuckles, and the wrist."
-                                        " These key points are then analyzed to classify different gestures based on their positions and movements.")
+        self.right_instruction = QLabel(
+            "Hand gesture recognition starts with detecting hands in the camera"
+            " frame using a palm detection model."
+            " Once a hand is found, a landmark model identifies 21 key points,"
+            " including fingertips, knuckles, and the wrist."
+            " These key points are then analyzed to classify different gestures"
+            " based on their positions and movements.")
         self.right_instruction.setAlignment(Qt.AlignLeft)  # Centering instruction text
         self.right_instruction.setWordWrap(True)
         self.right_instruction.setMaximumWidth(500)
@@ -140,8 +144,10 @@ class HandGestureRecognitionPage(QWidget):
             qt_image = QImage(rgb_image.data, w, h, ch * w, QImage.Format_RGB888)
 
         pixmap = QPixmap.fromImage(qt_image)
-        return pixmap.scaled(400, 400, Qt.KeepAspectRatio, Qt.SmoothTransformation)  # Keep emoji aspect ratio
+        return pixmap.scaled(400, 400,
+                              Qt.KeepAspectRatio,
+                              Qt.SmoothTransformation)  # Keep emoji aspect ratio
 
-    def call_close_event(self, event):
+    def use_close_event(self, event):
         """handle close event to release resources"""
         close_event(event,self)

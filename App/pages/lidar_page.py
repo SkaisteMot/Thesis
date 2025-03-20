@@ -1,11 +1,10 @@
-import sys
+"""LiDAR Page"""
 import numpy as np
 import vispy.app
 import vispy.scene
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QApplication
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel
 from PyQt5.QtCore import QTimer, Qt
 import cepton_sdk
-import cv2
 import matplotlib.pyplot as plt
 from cepton_sdk.common import *
 from utils import load_stylesheet
@@ -13,6 +12,7 @@ from utils import load_stylesheet
 _all_builder = AllBuilder(__name__)
 
 class PlotCanvas(vispy.scene.SceneCanvas):
+    """Plot the Lidar points"""
     def __init__(self, sensor, **kwargs):
         super().__init__(keys='interactive', **kwargs)
         self.unfreeze()  # Unfreeze the class to allow dynamic attributes
@@ -32,7 +32,7 @@ class PlotCanvas(vispy.scene.SceneCanvas):
         self.listener = cepton_sdk.SensorFramesListener(self.sensor.serial_number)
         self.lidar_data = None
         self.colors = None
-        
+
         # Set up the timer
         self.timer = QTimer()
         self.timer.timeout.connect(self.on_timer)
@@ -99,7 +99,7 @@ class LidarCameraPage(QWidget):
 
         # Left side: LiDAR feed
         self.video_layout = QVBoxLayout()
-        
+
         # ✅ Check if SDK is already initialized
         if not LidarCameraPage._is_initialized:
             print("Initializing Cepton SDK...")
@@ -109,11 +109,11 @@ class LidarCameraPage(QWidget):
             print("Cepton SDK already initialized.")
 
         self.sensor = cepton_sdk.Sensor.create_by_index(0)
-        #print("Sensor Information:", self.sensor.information.to_dict()) 
+        #print("Sensor Information:", self.sensor.information.to_dict())
 
         # Initialize canvas to display LiDAR stream and embed in PyQt
         self.canvas = PlotCanvas(sensor=self.sensor)
-        
+
         # Create and configure a QWidget to embed the canvas
         from vispy.app import use_app
         app = use_app('pyqt5')
@@ -126,15 +126,16 @@ class LidarCameraPage(QWidget):
         self.title_label.setAlignment(Qt.AlignCenter)
         self.title_label.setObjectName("title")
 
-        self.description_label = QLabel("LiDAR (Light Detection and Ranging) works by emitting laser "
-                                        "pulses and measuring the time it takes for them to bounce back "
-                                        "after hitting an object. Since the speed of light is constant, the "
-                                        "system can calculate the exact distance to each object based on the "
-                                        "time delay.By sending out millions of these laser pulses in different "
-                                        "directions, LiDAR creates a detailed 3D map of its surroundings. It's "
-                                        "commonly used in self-driving cars, drones, and mapping applications "
-                                        "because it provides precise depth information, even in low light or "
-                                        "foggy conditions.")
+        self.description_label = QLabel(
+            "LiDAR (Light Detection and Ranging) works by emitting laser "
+            "pulses and measuring the time it takes for them to bounce back "
+            "after hitting an object. Since the speed of light is constant, the "
+            "system can calculate the exact distance to each object based on the "
+            "time delay.By sending out millions of these laser pulses in different "
+            "directions, LiDAR creates a detailed 3D map of its surroundings. It's "
+            "commonly used in self-driving cars, drones, and mapping applications "
+            "because it provides precise depth information, even in low light or "
+            "foggy conditions.")
         self.description_label.setWordWrap(True)
         self.description_label.setObjectName("description")
         self.description_label.setAlignment(Qt.AlignCenter)

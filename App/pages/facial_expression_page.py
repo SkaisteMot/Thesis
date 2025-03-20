@@ -1,6 +1,6 @@
 """Facial expression page opened from home_Page.ui"""
 import cv2
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QHBoxLayout, QSpacerItem, QSizePolicy
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QHBoxLayout
 from PyQt5.QtGui import QPixmap, QImage, QFont
 from PyQt5.QtCore import QTimer, Qt
 from PyQt5.QtSvg import QSvgWidget
@@ -81,12 +81,15 @@ class FacialExpressionRecognitionPage(QWidget):
         self.face_emoji.setAlignment(Qt.AlignCenter)
 
         # Instruction label
-        self.description = QLabel("Make one of the following faces: 😊☹️😨😠😮🤢\n"
-                                  "(Happy, Sad, Scared, Angry, Surprised, Disgusted)\n"
-                                  "\nFacial expression recognition begins by detecting a"
-                                  " face in the camera frame. Key facial landmarks, such as the eyes, eyebrows, nose, and mouth, are then "
-                                  "identified. The system analyzes the positions and movements of these landmarks to classify expressions"
-                                  " like happiness, sadness, anger, or surprise.")
+        self.description = QLabel(
+            "Make one of the following faces: 😊☹️😨😠😮🤢\n"
+            "(Happy, Sad, Scared, Angry, Surprised, Disgusted)\n"
+            "\nFacial expression recognition begins by detecting a"
+            " face in the camera frame. Key facial landmarks, such "
+            "as the eyes, eyebrows, nose, and mouth, are then "
+            "identified. The system analyzes the positions and movements "
+            "of these landmarks to classify expressions"
+            " like happiness, sadness, anger, or surprise.")
         self.description.setAlignment(Qt.AlignTop | Qt.AlignLeft)
         self.description.setFont(QFont("Segoe UI Emoji"))
         self.description.setObjectName("description")
@@ -141,6 +144,6 @@ class FacialExpressionRecognitionPage(QWidget):
         if hasattr(self, "timer") and self.timer.isActive():
             self.timer.stop()
 
-    def closeEvent(self, event):
+    def use_close_event(self, event):
         """Handle close event to release resources"""
         close_event(event, self)

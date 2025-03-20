@@ -3,15 +3,12 @@ from os import close
 import sys
 import cv2
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QHBoxLayout
-from PyQt5.QtGui import QPixmap, QImage
+from PyQt5.QtGui import QPixmap, QImage,QFontMetrics
 from PyQt5.QtSvg import QSvgWidget
-
+from PyQt5.QtCore import QTimer, Qt
 from Algorithms.Objects.colour_detection import ColourRecognizer
 from Algorithms.Objects.object_detection import ObjectRecognizer
 from utils import load_stylesheet,close_event
-from PyQt5.QtCore import QTimer, Qt
-
-from PyQt5.QtGui import QPixmap, QImage, QFontMetrics, QFont
 
 class GeneralDemoPage(QWidget):
     """Page used for general display of streams"""
@@ -22,23 +19,26 @@ class GeneralDemoPage(QWidget):
         if self.algorithm == "colour":
             self.title="Colour Detection"
             self.recognizer = ColourRecognizer('Datasets/colour_ranges.csv')
-            self.instructions = "Hold up one of the following colours: Red, Blue, Yellow, Green, Purple" ##change this to autofill based on csv
-            self.description = ("The program detects colours in an image using predefined colour ranges. It "
-                           "first creates a mask to highlight areas that match each colour. Then, it "
-                           "finds the boundaries of these colour regions and draws outlines around them, "
-                           "making it easy to identify and count different colours in the video.")
+            self.instructions = "Hold up one of the following colours: Red, Blue," \
+            " Yellow, Green, Purple" ##change this to autofill based on csv
+            self.description = (
+                "The program detects colours in an image using predefined colour ranges. It "
+                "first creates a mask to highlight areas that match each colour. Then, it "
+                "finds the boundaries of these colour regions and draws outlines around them, "
+                "making it easy to identify and count different colours in the video.")
         elif self.algorithm == "object":
             self.title="Object Detection"
             self.instructions = "Hold up an object to detect and classify"
             self.recognizer = ObjectRecognizer('yolo11n.pt')
-            self.description = ("YOLO is a fast object detection system that processes an image by dividing "
-                           "it into a grid. Each grid cell predicts whether an object is present and, "
-                           "if so, draws a box around it. The image passes through multiple layers of a "
-                           "neural network, where early layers detect simple features like edges, while "
-                           "deeper layers recognize complex patterns and object shapes. Each grid cell "
-                           "outputs bounding boxes, confidence scores (how sure the model is about "
-                           "the detection), and class labels. This allows YOLO to quickly "
-                           "and accurately detect multiple objects in an image.")
+            self.description = (
+                "YOLO is a fast object detection system that processes an image by dividing "
+                "it into a grid. Each grid cell predicts whether an object is present and, "
+                "if so, draws a box around it. The image passes through multiple layers of a "
+                "neural network, where early layers detect simple features like edges, while "
+                "deeper layers recognize complex patterns and object shapes. Each grid cell "
+                "outputs bounding boxes, confidence scores (how sure the model is about "
+                "the detection), and class labels. This allows YOLO to quickly "
+                "and accurately detect multiple objects in an image.")
 
         self.setup_ui()
 
@@ -138,7 +138,11 @@ class GeneralDemoPage(QWidget):
         self.failed_frames = 0  # Reset counter on successful capture
 
         # Resize frame to match QLabel's minimum size
-        frame = cv2.resize(frame, (self.video_feed.width(), self.video_feed.height()), interpolation=cv2.INTER_LINEAR)
+        frame = cv2.resize(frame,
+                           (
+                               self.video_feed.width(),
+                               self.video_feed.height()
+                            ), interpolation=cv2.INTER_LINEAR)
 
         # Apply processing
         if self.algorithm == "colour":
@@ -157,7 +161,7 @@ class GeneralDemoPage(QWidget):
         pixmap = QPixmap.fromImage(qimg)
         self.video_feed.setPixmap(pixmap)
 
-    def closeEvent(self, event):
+    def use_close_event(self, event):
         """Handle window close event to release resources"""
         self.cap.release()
         self.timer.stop()
