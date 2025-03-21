@@ -23,6 +23,9 @@ class PlotCanvas(vispy.scene.SceneCanvas):
         self.view.camera.elevation = 8.5
         self.view.camera.fov = 0
         self.view.camera.scale_factor = 3.55
+        #test to see if this will normalize the point colouring
+        self.min_z = None
+        self.max_z = None
 
         self.points_visual = vispy.scene.visuals.Markers()
         self.points_visual.antialias = 0
@@ -40,17 +43,33 @@ class PlotCanvas(vispy.scene.SceneCanvas):
 
     def update_points(self, positions, colors=None, sizes=None):
         positions = positions - np.mean(positions, axis=0)
-
         num_points = positions.shape[0]
 
         if colors is None:
-            if self.colors is None or self.colors.shape[0] != num_points:
-                z_values = positions[:, 2]
-                min_z = np.min(z_values)
-                max_z = np.max(z_values)
-                norm_z = (z_values - min_z) / (max_z - min_z)
-                self.colors = plt.cm.viridis(norm_z)
-            colors = self.colors
+            # Calculate z-values
+            z_values = positions[:, 2]
+            
+            # Update min/max z with a moving average or set them initially
+            if self.min_z is None or self.max_z is None:
+                self.min_z = np.min(z_values)
+                self.max_z = np.max(z_values)
+            else:
+                # Gradual adjustment to avoid sudden color changes
+                # You can adjust the alpha value (0.05) to control adaptation speed
+                self.min_z = 0.95 * self.min_z + 0.05 * np.min(z_values)
+                self.max_z = 0.95 * self.max_z + 0.05 * np.max(z_values)
+                
+            # Ensure there's always at least a small range to avoid division by zero
+            if abs(self.max_z - self.min_z) < 0.1:
+                self.max_z = self.min_z + 0.1
+                
+            # Normalize with consistent range
+            norm_z = (z_values - self.min_z) / (self.max_z - self.min_z)
+            # Clip to handle outliers
+            norm_z = np.clip(norm_z, 0, 1)
+            self.colors = plt.cm.viridis(norm_z)
+            
+        colors = self.colors
 
         if colors.shape[0] != num_points:
             colors = np.resize(colors, (num_points, 4))
@@ -138,7 +157,6 @@ class LidarCameraPage(QWidget):
             "foggy conditions.")
         self.description_label.setWordWrap(True)
         self.description_label.setObjectName("description")
-        self.description_label.setAlignment(Qt.AlignCenter)
 
         self.qr_widget=QRCodeWidget("Datasets/QRcodes/lidar_QR.svg",
                                     "Scan this to learn more about LiDAR sensors!",

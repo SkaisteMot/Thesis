@@ -41,7 +41,6 @@ class ThermalCameraPage(QWidget):
             "and in harsh weather conditions, making them useful for applications "
             "like night vision, search and rescue, and industrial inspections.")
         self.description_label.setWordWrap(True)
-        self.description_label.setAlignment(Qt.AlignCenter)
         self.description_label.setObjectName("description")
 
         self.qr_widget=QRCodeWidget("Datasets/QRcodes/thermal_QR.svg",
