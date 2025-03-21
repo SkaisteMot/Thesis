@@ -79,9 +79,17 @@ class FacialExpressionRecognitionPage(QWidget):
         self.face_emoji.setAlignment(Qt.AlignCenter)
 
         # Instruction label
-        self.description = QLabel(
+        self.instructions = QLabel(
             "Make one of the following faces: 😊☹️😨😠😮🤢\n"
             "(Happy, Sad, Scared, Angry, Surprised, Disgusted)\n"
+        )
+        self.instructions.setFont(QFont("Segoe UI Emoji"))
+        self.instructions.setAlignment(Qt.AlignTop | Qt.AlignHCenter)
+        self.instructions.setObjectName("instructions")
+        self.instructions.setWordWrap(True)
+        #self.instructions.setMaximumWidth(900)
+
+        self.description=QLabel(
             "\nFacial expression recognition begins by detecting a"
             " face in the camera frame. Key facial landmarks, such "
             "as the eyes, eyebrows, nose, and mouth, are then "
@@ -89,7 +97,6 @@ class FacialExpressionRecognitionPage(QWidget):
             "of these landmarks to classify expressions"
             " like happiness, sadness, anger, or surprise.")
         self.description.setAlignment(Qt.AlignTop | Qt.AlignLeft)
-        self.description.setFont(QFont("Segoe UI Emoji"))
         self.description.setObjectName("description")
         self.description.setWordWrap(True)
         self.description.setMaximumWidth(900)
@@ -101,6 +108,7 @@ class FacialExpressionRecognitionPage(QWidget):
         emoji_layout.addWidget(self.emoji_label)
         emoji_layout.addWidget(self.face_emoji)
         right_layout.addLayout(emoji_layout)
+        right_layout.addWidget(self.instructions)
         right_layout.addWidget(self.description, alignment=Qt.AlignTop | Qt.AlignLeft)
         right_layout.addStretch()
         right_layout.addWidget(self.qr_widget)

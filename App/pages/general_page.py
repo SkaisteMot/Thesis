@@ -66,7 +66,7 @@ class GeneralDemoPage(QWidget):
         self.instruction_label.setObjectName("instructions")
         self.instruction_label.setAlignment(Qt.AlignTop |Qt.AlignCenter)
         self.instruction_label.setWordWrap(True)  # Allow text to wrap
-        self.instruction_label.setMaximumWidth(950)
+        self.instruction_label.setMinimumWidth(970)
         self.adjust_instructions_height()  # Adjust height based on text
 
         # Description Section

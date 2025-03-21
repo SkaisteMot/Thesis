@@ -31,4 +31,12 @@ QWidget {
     font-weight: normal;
     text-align: left;
     color:black;
+    padding:10px;
+}
+
+#instructions {
+    font-size: 24px;
+    font-weight: normal;
+    max-width: 900px;
+    color:black;
 }
