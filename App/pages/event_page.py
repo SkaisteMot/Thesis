@@ -1,41 +1,40 @@
-"""Event page"""
 import os
+import sys
 import subprocess
 import time
 import threading
 import pygetwindow as gw
-import pyautogui
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel
+import win32gui
+import win32con
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QApplication
 from PyQt5.QtCore import QTimer, Qt
-from utils import load_stylesheet, close_event,QRCodeWidget
+from utils import load_stylesheet, close_event, QRCodeWidget
 
 class EventCameraPage(QWidget):
-    """Prophesee Viewer Integration Page with Auto-Start"""
+    """Event Camera Page with Embedded VcXsrv"""
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Event Camera Stream")
 
-        self.xming_process = None
+        self.vcxsrv_process = None
         self.ssh_process = None
         self.is_running = False
 
         self.setup_ui()
-
         QTimer.singleShot(100, self.start_prophesee_viewer)
 
     def setup_ui(self):
         """Setup UI"""
-        # Load stylesheet
         load_stylesheet(self, "App/styles/sensors.qss")
 
-        self.layout = QVBoxLayout()  # Horizontal layout
-        self.layout.setAlignment(Qt.AlignRight)  # Align everything to the right
+        self.layout = QVBoxLayout()
+        self.layout.setAlignment(Qt.AlignRight)
 
         self.status_label = QLabel("Starting Event Camera Stream...")
-        self.status_label.setAlignment(Qt.AlignRight | Qt.AlignVCenter)  # Align text to right
+        self.status_label.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
         self.status_label.setObjectName("status_label")
 
-        self.description=QLabel(
+        self.description = QLabel(
             "An event camera is a neuromorphic sensor that detects changes "
             "in brightness at each pixel instead of capturing full images at "
             "a fixed rate. Each pixel operates independently, generating an 'event'"
@@ -48,22 +47,19 @@ class EventCameraPage(QWidget):
         self.description.setWordWrap(True)
         self.description.setObjectName("description")
 
-        self.qr_widget=QRCodeWidget("Datasets/QRcodes/event_QR.svg",
-                                    "Scan this to learn more about event cameras!",
-                                     label_width=800)
+        self.qr_widget = QRCodeWidget("Datasets/QRcodes/event_QR.svg",
+                                      "Scan this to learn more about event cameras!",
+                                      label_width=800)
 
         self.layout.addWidget(self.status_label)
         self.layout.addWidget(self.description)
         self.layout.addStretch()
         self.layout.addWidget(self.qr_widget)
-        
-        # Set layout
-        container = QWidget()
-        container.setLayout(self.layout)
+
         self.setLayout(self.layout)
 
     def start_prophesee_viewer(self):
-        """Start the Prophesee Viewer automatically"""
+        """Start Prophesee Viewer embedded in PyQt"""
         if not self.is_running:
             self.is_running = True
             self.status_label.setText("Starting Event Camera Stream...")
@@ -72,55 +68,67 @@ class EventCameraPage(QWidget):
             thread.start()
 
     def _run_prophesee_setup(self):
-        """Run the Prophesee setup in a separate thread"""
+        """Start VcXsrv and Prophesee Viewer, then embed it"""
         try:
-            # Hide command line window
-            startupinfo = subprocess.STARTUPINFO()
-            startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+            # Start VcXsrv
+            self.update_status("Initializing VcXsrv...")
+            self.vcxsrv_process = self.start_vcxsrv()
 
-            # Start Xming
-            xming_path = "C:\\Program Files (x86)\\Xming\\Xming.exe"
-            if not os.path.exists(xming_path):
-                self.update_status("Error: Xming not found.")
-                return
+            time.sleep(3)  # Allow VcXsrv to initialize
 
-            self.xming_process = subprocess.Popen(
-                [xming_path, ":0", "-clipboard", "-multiwindow"],
-                startupinfo=startupinfo
-            )
-
-            self.update_status("Initializing X server...")
-            time.sleep(3)
-
-            # Maximize Xming to left half
-            self.maximize_xming_left()
-
-            # Set DISPLAY and run SSH command
-            self.update_status("Connecting to event camera...")
+            # Set DISPLAY environment variable
             env = os.environ.copy()
             env['DISPLAY'] = 'localhost:0.0'
 
+            # Start Prophesee Viewer via SSH
+            self.update_status("Connecting to event camera...")
             self.ssh_process = subprocess.Popen(
                 ["ssh", "-Y", "root@169.254.10.10", "sudo", "-E", "prophesee_viewer"],
-                env=env,
-                startupinfo=startupinfo
+                env=env
             )
 
+            time.sleep(2)  # Wait for the window to appear
+            self.embed_vcxsrv_window()
             self.update_status("Event Camera Stream Running")
 
         except Exception as e:
             self.update_status(f"Error: {str(e)}")
 
-    def maximize_xming_left(self):
-        """Maximize Xming window on the left half of the screen"""
-        time.sleep(3)
-        windows = gw.getWindowsWithTitle("Xming")
-        print(gw.getAllTitles())
-        if windows:
-            xming_window = windows[0]
-            screen_width, screen_height = pyautogui.size()
-            xming_window.moveTo(0, 0)
-            xming_window.resizeTo(screen_width // 2, screen_height)
+    def start_vcxsrv(self):
+        """Start VcXsrv in single window mode, minimized"""
+        vcxsrv_path = "C:\\Program Files\\VcXsrv\\vcxsrv.exe"
+        startupinfo = subprocess.STARTUPINFO()
+        startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+        startupinfo.wShowWindow = win32con.SW_MINIMIZE  # Start minimized
+        return subprocess.Popen([vcxsrv_path, ":0", "-screen", "0", "800x600+0+0"],
+                                startupinfo=startupinfo)
+
+    def get_vcxsrv_window(self):
+        """Find the VcXsrv window handle (HWND)"""
+        time.sleep(2)
+        for window in gw.getAllWindows():
+            if "VcXsrv" in window.title:
+                return window._hWnd  # Return window handle
+        return None
+
+    def embed_vcxsrv_window(self):
+        """Reparent and center the VcXsrv window inside the PyQt application"""
+        hwnd_vcxsrv = self.get_vcxsrv_window()
+        if hwnd_vcxsrv:
+            win32gui.SetParent(hwnd_vcxsrv, self.winId())  
+            win32gui.SetWindowLong(hwnd_vcxsrv, win32con.GWL_STYLE, win32con.WS_VISIBLE)
+
+            # Get panel size
+            panel_width = self.layout.geometry().width() //2
+            panel_height = self.layout.geometry().height()
+
+            # Center the VcXsrv window within the left panel
+            win32gui.MoveWindow(hwnd_vcxsrv, (panel_width - 640) // 2, (panel_height - 480) // 2, 
+                                640, 480, True)
+            print(f"VcXsrv window {hwnd_vcxsrv} embedded and centered.")
+        else:
+            print("VcXsrv window not found.")
+
 
     def stop_prophesee_viewer(self):
         """Stop Prophesee Viewer"""
@@ -129,14 +137,14 @@ class EventCameraPage(QWidget):
             if self.ssh_process:
                 self.ssh_process.terminate()
                 self.ssh_process = None
-            if self.xming_process:
-                self.xming_process.terminate()
-                self.xming_process = None
+            if self.vcxsrv_process:
+                self.vcxsrv_process.terminate()
+                self.vcxsrv_process = None
             self.is_running = False
             self.status_label.setText("Event Camera Stream: Stopped")
 
     def update_status(self, message):
-        """Update status safely"""
+        """Update status safely in PyQt"""
         from PyQt5.QtCore import QObject, pyqtSignal
 
         class Communicator(QObject):
@@ -148,7 +156,7 @@ class EventCameraPage(QWidget):
 
         self._communicator.status_signal.emit(message)
 
-    def use_close_event(self, event):
+    def closeEvent(self, event):
         """Handle close event"""
         self.stop_prophesee_viewer()
         close_event(event, self)
