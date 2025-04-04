@@ -1,60 +1,98 @@
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QHBoxLayout
-from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QPixmap, QImage
+"""Page that is used when only a stream is outputted, object detection, colour detection etc"""
 import sys
-import os
 import cv2
-
-# Add the DevCode directory to the Python path
-sys.path.append(os.path.abspath("C:\\Users\\skais\\ThesisProject\\DevCode"))
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QHBoxLayout
+from PyQt5.QtGui import QPixmap, QImage,QFontMetrics
+from PyQt5.QtCore import QTimer, Qt
 from Algorithms.Objects.colour_detection import ColourRecognizer
 from Algorithms.Objects.object_detection import ObjectRecognizer
-
+from utils import load_stylesheet,close_event,QRCodeWidget
 
 class GeneralDemoPage(QWidget):
-    def __init__(self, title: str, description: str, algorithm: str):
+    """Page used for general display of streams"""
+    def __init__(self, algorithm: str):
         super().__init__()
-        self.setWindowTitle(title)
 
         self.algorithm = algorithm
         if self.algorithm == "colour":
-            self.recognizer = ColourRecognizer('../Datasets/colour_ranges.csv')
+            self.title="Colour Detection"
+            self.recognizer = ColourRecognizer('Datasets/colour_ranges.csv')
+            self.instructions = "Hold up one of the following colours: Red, Blue," \
+            " Yellow, Green, Purple" ##change this to autofill based on csv
+            self.description = (
+                "The program detects colours in an image using predefined colour ranges. It "
+                "first creates a mask to highlight areas that match each colour. Then, it "
+                "finds the boundaries of these colour regions and draws outlines around them, "
+                "making it easy to identify and count different colours in the video.")
         elif self.algorithm == "object":
+            self.title="Object Detection"
+            self.instructions = "Hold up an object to detect and classify"
             self.recognizer = ObjectRecognizer('yolo11n.pt')
+            self.description = (
+                "YOLO is a fast object detection system that processes an image by dividing "
+                "it into a grid. Each grid cell predicts whether an object is present and, "
+                "if so, draws a box around it. The image passes through multiple layers of a "
+                "neural network, where early layers detect simple features like edges, while "
+                "deeper layers recognize complex patterns and object shapes. Each grid cell "
+                "outputs bounding boxes, confidence scores (how sure the model is about "
+                "the detection), and class labels. This allows YOLO to quickly "
+                "and accurately detect multiple objects in an image.")
 
-        # Main layout (horizontal layout for video right panel)
-        main_layout = QHBoxLayout(self)
+        self.setup_ui()
 
-        # Video Stream Section (Left) - Change QFrame to QLabel
-        self.video_label = QLabel()
-        self.video_label.setStyleSheet("background-color: black;")
-        self.video_label.setMinimumSize(400, 300)  # Minimum size for the video area
-        main_layout.addWidget(self.video_label, stretch=3)
+    def setup_ui(self):
+        """setup general page ui"""
+        self.setWindowTitle(self.title)
+        # Main layout
+        main_layout = QHBoxLayout()
 
-        # Right Panel (Output and Description)
-        right_panel = QVBoxLayout()
+         # Left panel for the video feed
+        left_layout = QVBoxLayout()
+        left_layout.addStretch()
+        self.video_feed = QLabel()
+        self.video_feed.setObjectName("video_feed")
+        self.video_feed.setScaledContents(True)
+        self.video_feed.setFixedSize(900, 900)
+        self.video_feed.setAlignment(Qt.AlignCenter)
+        left_layout.addWidget(self.video_feed, alignment=Qt.AlignCenter)
+        left_layout.addStretch()
 
-        # Output Section (Top of Right Panel)
-        self.output_label = QLabel("Output Here")
-        self.output_label.setStyleSheet(
-            "background-color: lightgray; font-size: 16px; padding: 10px;"
-        )
-        self.output_label.setAlignment(Qt.AlignCenter)
-        self.output_label.setFixedHeight(150)  # Optional: Adjust height as needed
-        right_panel.addWidget(self.output_label, stretch=1)
+        # Right Panel (Instruction and Description)
+        right_layout = QVBoxLayout()
+        right_layout.setAlignment(Qt.AlignTop | Qt.AlignHCenter)
 
-        # Description Section (Bottom of Right Panel)
-        self.description_label = QLabel(description)
-        self.description_label.setStyleSheet("font-size: 18px; color: gray;")
-        self.description_label.setAlignment(Qt.AlignLeft | Qt.AlignTop)
+        #Instruction Section
+        self.instruction_label = QLabel(self.instructions)
+        self.instruction_label.setObjectName("instructions")
+        self.instruction_label.setAlignment(Qt.AlignTop |Qt.AlignCenter)
+        self.instruction_label.setWordWrap(True)  # Allow text to wrap
+        self.instruction_label.setMinimumWidth(970)
+        self.adjust_instructions_height()  # Adjust height based on text
+
+        # Description Section
+        self.description_label = QLabel(self.description)
+        self.description_label.setObjectName("description")
+        self.instruction_label.setMaximumWidth(800)
         self.description_label.setWordWrap(True)
-        right_panel.addWidget(self.description_label, stretch=2)
+        self.description_label.setAlignment(Qt.AlignLeft | Qt.AlignTop)
 
-        # Add the right panel to the main layout
-        main_layout.addLayout(right_panel, stretch=2)
+        #QR
+        self.qr_widget=QRCodeWidget("Datasets/QRcodes/rgb_QR.svg",
+                                    "Scan this to learn more about RGB cameras!",
+                                    label_width=800)
 
-        # Set the main layout
+        right_layout.addWidget(self.instruction_label)
+        right_layout.addWidget(self.description_label)
+        right_layout.addStretch()
+        right_layout.addWidget(self.qr_widget)
+
+        # Add right panel to the main layout
+        main_layout.addLayout(left_layout)
+        main_layout.addLayout(right_layout)
         self.setLayout(main_layout)
+
+        # Load stylesheet
+        load_stylesheet(self, 'App/styles/general.qss')
 
         # Start video capture
         self.cap = cv2.VideoCapture(0)
@@ -63,46 +101,59 @@ class GeneralDemoPage(QWidget):
             sys.exit()
 
         self.failed_frames = 0  # Counter for consecutive failed frames
-        self.timer = self.startTimer(20)
 
-    def timerEvent(self, event):
+        # Start Timer to Refresh Video Feed
+        self.timer = QTimer(self)
+        self.timer.timeout.connect(self.update_frame)
+        self.timer.start(20)  # 20ms interval
+
+    def adjust_instructions_height(self):
+        """Adjust output label height based on the text lines"""
+        font = self.instruction_label.font()
+        fm = QFontMetrics(font)
+        text_height = fm.boundingRect(self.instruction_label.text()).height()
+        self.instruction_label.setFixedHeight(text_height + 50)  # Add padding
+
+    def update_frame(self):
+        """Capture and process frames for display"""
         ret, frame = self.cap.read()
         if not ret:
             self.failed_frames += 1
             print(f"Failed to grab frame {self.failed_frames} times.")
 
-            # Close the stream if the threshold is reached
             if self.failed_frames > 10:
                 print("Too many failed frames. Stopping the stream.")
-                self.close()  # Trigger close event
+                self.close()
             return
 
-        # Reset failed frames counter on successful frame capture
-        self.failed_frames = 0
+        self.failed_frames = 0  # Reset counter on successful capture
 
+        # Resize frame to match QLabel's minimum size
+        frame = cv2.resize(frame,
+                           (
+                               self.video_feed.width(),
+                               self.video_feed.height()
+                            ), interpolation=cv2.INTER_LINEAR)
+
+        # Apply processing
         if self.algorithm == "colour":
             processed_frame = self.recognizer.detect_and_draw(frame)
         elif self.algorithm == "object":
             processed_frame = self.recognizer.detect_and_draw(frame)
+        else:
+            processed_frame = frame
 
-        # Convert processed frame to QImage
-        height, width, channel = processed_frame.shape
-        bytes_per_line = 3 * width
+        # Convert to QImage
+        height, width, channels = processed_frame.shape
+        bytes_per_line = channels * width
         qimg = QImage(processed_frame.data, width, height, bytes_per_line, QImage.Format_BGR888)
 
-        # Update the video frame (using QLabel's setPixmap)
+        # Directly assign without scaling first
         pixmap = QPixmap.fromImage(qimg)
-        self.video_label.setPixmap(pixmap)
+        self.video_feed.setPixmap(pixmap)
 
-    def closeEvent(self, event):
-        # Release the video capture and stop the algorithm
-        if hasattr(self, 'cap') and self.cap.isOpened():
-            self.cap.release()
-
-        print("Video stream and resources have been released.")
-
-        # Stop the timer
-        self.killTimer(self.timer)
-
-        # Accept the close event
-        event.accept()
+    def use_close_event(self, event):
+        """Handle window close event to release resources"""
+        self.cap.release()
+        self.timer.stop()
+        close_event(event, self)

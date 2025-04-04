@@ -18,33 +18,33 @@
     <property name="geometry">
      <rect>
       <x>1450</x>
-      <y>250</y>
+      <y>200</y>
       <width>350</width>
       <height>80</height>
      </rect>
     </property>
     <property name="text">
-     <string>Hand Gesture Button</string>
+     <string>Hand Gesture Recognition</string>
     </property>
    </widget>
    <widget class="QPushButton" name="facialExpressionButton">
     <property name="geometry">
      <rect>
       <x>1450</x>
-      <y>350</y>
+      <y>300</y>
       <width>350</width>
       <height>80</height>
      </rect>
     </property>
     <property name="text">
-     <string>Facial Expression Button</string>
+     <string>Facial Expression Recognition</string>
     </property>
    </widget>
    <widget class="QPushButton" name="colourButton">
     <property name="geometry">
      <rect>
       <x>1450</x>
-      <y>450</y>
+      <y>400</y>
       <width>350</width>
       <height>80</height>
      </rect>
@@ -57,7 +57,7 @@
     <property name="geometry">
      <rect>
       <x>1450</x>
-      <y>550</y>
+      <y>500</y>
       <width>350</width>
       <height>80</height>
      </rect>
@@ -70,7 +70,7 @@
     <property name="geometry">
      <rect>
       <x>1450</x>
-      <y>650</y>
+      <y>600</y>
       <width>350</width>
       <height>80</height>
      </rect>
@@ -83,7 +83,7 @@
     <property name="geometry">
      <rect>
       <x>1450</x>
-      <y>750</y>
+      <y>700</y>
       <width>350</width>
       <height>80</height>
      </rect>
@@ -96,7 +96,7 @@
     <property name="geometry">
      <rect>
       <x>1450</x>
-      <y>850</y>
+      <y>800</y>
       <width>350</width>
       <height>80</height>
      </rect>
@@ -109,7 +109,7 @@
     <property name="geometry">
      <rect>
       <x>130</x>
-      <y>285</y>
+      <y>310</y>
       <width>620</width>
       <height>75</height>
      </rect>
@@ -127,22 +127,25 @@
    <widget class="QLabel" name="description">
     <property name="geometry">
      <rect>
-      <x>140</x>
-      <y>400</y>
-      <width>1190</width>
+      <x>130</x>
+      <y>410</y>
+      <width>1100</width>
       <height>470</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <pointsize>14</pointsize>
+      <pointsize>16</pointsize>
      </font>
+    </property>
+    <property name="text">
+     <string>This is a multi-sensor demonstration application that integrates an RGB camera, Event camera, LiDAR and Thermal camera to showcase their functionality and unique capabilities. It also includes recognition algorithms for the RGB camera, allowing for real-time detection and analysis of objects, gestures and facial expressions.
+
+Click on a button to start exploring and enjoy the learning experience!
+</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
-    </property>
-    <property name="text">
-     <string>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas commodo, est et tristique euismod, augue nulla porttitor tortor, sed convallis arcu eros tristique nulla. Vestibulum vel faucibus urna, malesuada congue mauris. Quisque pharetra hendrerit mauris id dapibus. Pellentesque purus lorem, sagittis sit amet imperdiet elementum, facilisis eu enim. Morbi id lectus posuere nisl tempor ullamcorper at eu tortor. Mauris nec sem eu felis consequat lobortis eu et nibh. Suspendisse sit amet pretium ante, nec ornare elit.</string>
     </property>
     <property name="wordWrap">
      <bool>true</bool>
@@ -154,9 +157,9 @@
    <widget class="QFrame" name="frame">
     <property name="geometry">
      <rect>
-      <x>50</x>
-      <y>870</y>
-      <width>720</width>
+      <x>130</x>
+      <y>850</y>
+      <width>761</width>
       <height>111</height>
      </rect>
     </property>
@@ -192,14 +195,15 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>70</y>
-       <width>70</width>
+       <y>60</y>
+       <width>100</width>
        <height>20</height>
       </rect>
      </property>
      <property name="font">
       <font>
        <pointsize>12</pointsize>
+       <fontweight>Medium</fontweight>
       </font>
      </property>
      <property name="text">
@@ -209,8 +213,8 @@
     <widget class="QLabel" name="rgbCircle">
      <property name="geometry">
       <rect>
-       <x>80</x>
-       <y>70</y>
+       <x>110</x>
+       <y>60</y>
        <width>20</width>
        <height>20</height>
       </rect>
@@ -222,15 +226,16 @@
     <widget class="QLabel" name="lidarLabel">
      <property name="geometry">
       <rect>
-       <x>140</x>
-       <y>70</y>
-       <width>70</width>
+       <x>210</x>
+       <y>60</y>
+       <width>100</width>
        <height>20</height>
       </rect>
      </property>
      <property name="font">
       <font>
        <pointsize>12</pointsize>
+       <fontweight>Medium</fontweight>
       </font>
      </property>
      <property name="text">
@@ -240,8 +245,8 @@
     <widget class="QLabel" name="lidarCircle">
      <property name="geometry">
       <rect>
-       <x>210</x>
-       <y>70</y>
+       <x>310</x>
+       <y>60</y>
        <width>20</width>
        <height>20</height>
       </rect>
@@ -253,15 +258,16 @@
     <widget class="QLabel" name="thermalLabel">
      <property name="geometry">
       <rect>
-       <x>250</x>
-       <y>70</y>
-       <width>70</width>
+       <x>410</x>
+       <y>60</y>
+       <width>100</width>
        <height>20</height>
       </rect>
      </property>
      <property name="font">
       <font>
        <pointsize>12</pointsize>
+       <fontweight>Medium</fontweight>
       </font>
      </property>
      <property name="text">
@@ -271,11 +277,14 @@
     <widget class="QLabel" name="thermalCircle">
      <property name="geometry">
       <rect>
-       <x>320</x>
-       <y>70</y>
+       <x>510</x>
+       <y>60</y>
        <width>20</width>
        <height>20</height>
       </rect>
+     </property>
+     <property name="autoFillBackground">
+      <bool>false</bool>
      </property>
      <property name="text">
       <string/>
@@ -284,15 +293,16 @@
     <widget class="QLabel" name="eventLabel">
      <property name="geometry">
       <rect>
-       <x>370</x>
-       <y>70</y>
-       <width>70</width>
+       <x>610</x>
+       <y>60</y>
+       <width>100</width>
        <height>20</height>
       </rect>
      </property>
      <property name="font">
       <font>
        <pointsize>12</pointsize>
+       <fontweight>Medium</fontweight>
       </font>
      </property>
      <property name="text">
@@ -302,8 +312,8 @@
     <widget class="QLabel" name="eventCircle">
      <property name="geometry">
       <rect>
-       <x>440</x>
-       <y>70</y>
+       <x>710</x>
+       <y>60</y>
        <width>20</width>
        <height>20</height>
       </rect>
@@ -329,6 +339,47 @@
      <pixmap>../Datasets/UGLogo.svg</pixmap>
     </property>
     <property name="scaledContents">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QLabel" name="QR_Code">
+    <property name="geometry">
+     <rect>
+      <x>130</x>
+      <y>690</y>
+      <width>130</width>
+      <height>130</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="pixmap">
+     <pixmap>../Datasets/QRcodes/home_QR.svg</pixmap>
+    </property>
+    <property name="scaledContents">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QLabel" name="QR_label">
+    <property name="geometry">
+     <rect>
+      <x>280</x>
+      <y>690</y>
+      <width>970</width>
+      <height>130</height>
+     </rect>
+    </property>
+    <property name="font">
+      <font>
+       <pointsize>16</pointsize>
+       <fontweight>Medium</fontweight>
+      </font>
+     </property>
+    <property name="text">
+     <string>Scan this QR code to visit the sensor rig website and learn more about the sensors!</string>
+    </property>
+    <property name="wordWrap">
      <bool>true</bool>
     </property>
    </widget>

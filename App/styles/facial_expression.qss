@@ -1,0 +1,42 @@
+QWidget {
+    background-color: #f0f0f0;
+}
+
+#video_feed {
+    border: 2px solid black;
+    border-radius: 10px;
+    background-color: black;
+    width: 400px;
+    height: 400px;
+}
+
+#emoji_label {
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+    color:black;
+}
+
+#emoji_img {
+    border: 2px solid black;
+    border-radius: 10px;
+    background-color: white;
+    width: 200px;
+    height: 200px;
+    margin: 10px;
+}
+
+#description {
+    font-size: 24px;
+    font-weight: normal;
+    text-align: left;
+    color:black;
+    padding:10px;
+}
+
+#instructions {
+    font-size: 24px;
+    font-weight: normal;
+    max-width: 900px;
+    color:black;
+}
