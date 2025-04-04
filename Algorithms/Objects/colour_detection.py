@@ -12,6 +12,15 @@ class ColourRecognizer:
     """Colour Recognizer called by UI"""
     def __init__(self, colour_ranges_csv):
         self.colour_ranges = self.load_colour_ranges(colour_ranges_csv)
+        self.bgr_colour_dict = {
+            'red': (0, 0, 255),
+            "green": (0, 255, 0),
+            "blue": (255, 0, 0),
+            "yellow": (0, 255, 255),
+            "orange": (0, 165, 255),
+            "purple": (128, 0, 128),
+            "pink":(203,192,255)
+         }
 
     def load_colour_ranges(self, csv_file):
         """load predefined hsv colour range from csv file"""
@@ -31,8 +40,9 @@ class ColourRecognizer:
     def draw_bounding_box(self, image, contour, colour):
         """draw boxes around detected colours"""
         x, y, w, h = cv2.boundingRect(contour)
-        cv2.rectangle(image, (x, y), (x + w, y + h), (0, 0, 0), 2, lineType=cv2.LINE_AA)
-        cv2.putText(image, colour, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2)
+        box_color = self.bgr_colour_dict.get(colour, (0, 0, 0))
+        cv2.rectangle(image, (x, y), (x + w, y + h), box_color, 2, lineType=cv2.LINE_AA)
+        cv2.putText(image, colour, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, box_color, 2)
 
     def count_colours(self, image, contours, colour, min_area):
         """count borders to check the amount for each colour"""
