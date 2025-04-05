@@ -10,8 +10,8 @@ from ultralytics import YOLO
 
 class ObjectRecognizer:
     """Object Recognizer called from UI"""
-    def __init__(self, model_path):
-        self.model = YOLO(model_path)
+    def __init__(self):
+        self.model = YOLO('yolov8n.pt')
 
     def detect_and_draw(self, frame):
         """Input into model with confidence filtering"""

@@ -27,7 +27,7 @@ class GeneralDemoPage(QWidget):
         elif self.algorithm == "object":
             self.title="Object Detection"
             self.instructions = "Hold up an object to detect and classify"
-            self.recognizer = ObjectRecognizer('yolo11n.pt')
+            self.recognizer = ObjectRecognizer()
             self.description = (
                 "YOLO is a fast object detection system that processes an image by dividing "
                 "it into a grid. Each grid cell predicts whether an object is present and, "
