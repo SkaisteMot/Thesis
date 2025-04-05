@@ -1,13 +1,12 @@
 """LiDAR Page"""
 import numpy as np
-import vispy.app
 import vispy.scene
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton
 from PyQt5.QtCore import QTimer, Qt
 import cepton_sdk
 import matplotlib.pyplot as plt
 from cepton_sdk.common import *
-from utils import load_stylesheet,QRCodeWidget
+from utils import load_stylesheet, QRCodeWidget
 
 _all_builder = AllBuilder(__name__)
 
@@ -87,21 +86,25 @@ class PlotCanvas(vispy.scene.SceneCanvas):
         self.update()  # Request canvas update
 
     def fetch_lidar_data(self):
-        points_list = self.listener.get_points()
-        if points_list:
-            points = points_list[0]
-            self.lidar_data = points.positions
-            return self.lidar_data
-        return None
+        try:
+            points_list = self.listener.get_points()
+            if points_list:
+                points = points_list[0]
+                self.lidar_data = points.positions
+                return self.lidar_data
+            return None
+        except Exception as e:
+            print(f"Error fetching LiDAR data: {e}")
+            return None
 
     def on_timer(self):
-        positions = self.fetch_lidar_data()
-        if positions is not None:
-            self.update_points(positions)
-        else:
-            print("No LiDAR data available at the moment.")
+        try:
+            positions = self.fetch_lidar_data()
+            if positions is not None:
+                self.update_points(positions)
+        except Exception as e:
+            print(f"Error in timer callback: {e}")
 
-import cepton_sdk
 
 class LidarCameraPage(QWidget):
     _is_initialized = False  # Class-level flag to track SDK initialization
@@ -115,31 +118,22 @@ class LidarCameraPage(QWidget):
 
         # Main layout (horizontal split)
         self.main_layout = QHBoxLayout()
+        
+        # Initialize the info layout that will be used in both cases
+        self.setup_info_layout()
 
-        # Left side: LiDAR feed
-        self.video_layout = QVBoxLayout()
+        try:
+            # Try to initialize LiDAR and set up the visualization
+            self.initialize_lidar()
+        except Exception as e:
+            # Show error message and set up a blank widget instead
+            self.handle_lidar_error(str(e))
+            
+        # Set the main layout
+        self.setLayout(self.main_layout)
 
-        # ✅ Check if SDK is already initialized
-        if not LidarCameraPage._is_initialized:
-            print("Initializing Cepton SDK...")
-            cepton_sdk.initialize(enable_wait=True)
-            LidarCameraPage._is_initialized = True  # Set flag to prevent reinitialization
-        else:
-            print("Cepton SDK already initialized.")
-
-        self.sensor = cepton_sdk.Sensor.create_by_index(0)
-        #print("Sensor Information:", self.sensor.information.to_dict())
-
-        # Initialize canvas to display LiDAR stream and embed in PyQt
-        self.canvas = PlotCanvas(sensor=self.sensor)
-
-        # Create and configure a QWidget to embed the canvas
-        from vispy.app import use_app
-        app = use_app('pyqt5')
-        self.canvas_widget = self.canvas.native
-        self.video_layout.addWidget(self.canvas_widget)
-
-        # Right side: Title and description
+    def setup_info_layout(self):
+        """Set up the information panel on the right side"""
         self.info_layout = QVBoxLayout()
         self.title_label = QLabel("LiDAR Camera Stream")
         self.title_label.setAlignment(Qt.AlignCenter)
@@ -158,7 +152,7 @@ class LidarCameraPage(QWidget):
         self.description_label.setWordWrap(True)
         self.description_label.setObjectName("description")
 
-        self.qr_widget=QRCodeWidget("Datasets/QRcodes/lidar_QR.svg",
+        self.qr_widget = QRCodeWidget("Datasets/QRcodes/lidar_QR.svg",
                                     "Scan this to learn more about LiDAR sensors!",
                                     label_width=800)
 
@@ -167,10 +161,79 @@ class LidarCameraPage(QWidget):
         self.info_layout.addStretch()
         self.info_layout.addWidget(self.qr_widget)
 
+    def initialize_lidar(self):
+        """Initialize the LiDAR sensor and setup the visualization"""
+        # Left side: LiDAR feed
+        self.video_layout = QVBoxLayout()
+
+        # Initialize Cepton SDK if not already initialized
+        if not LidarCameraPage._is_initialized:
+            print("Initializing Cepton SDK...")
+            try:
+                cepton_sdk.initialize(enable_wait=True)
+                LidarCameraPage._is_initialized = True
+            except Exception as e:
+                # If initialization fails, raise the exception to be caught by the caller
+                raise Exception(f"Failed to initialize Cepton SDK: {e}")
+        else:
+            print("Cepton SDK already initialized.")
+
+        # Try to create sensor
+        try:
+            self.sensor = cepton_sdk.Sensor.create_by_index(0)
+        except Exception as e:
+            raise Exception(f"No LiDAR sensor detected: {e}")
+
+        # Initialize canvas to display LiDAR stream and embed in PyQt
+        self.canvas = PlotCanvas(sensor=self.sensor)
+
+        # Create and configure a QWidget to embed the canvas
+        from vispy.app import use_app
+        app = use_app('pyqt5')
+        self.canvas_widget = self.canvas.native
+        self.video_layout.addWidget(self.canvas_widget)
+
         # Add sections to main layout
         self.main_layout.addLayout(self.video_layout, 2)
         self.main_layout.addLayout(self.info_layout, 1)
-        self.setLayout(self.main_layout)
+
+    def handle_lidar_error(self, error_message):
+        """Handle cases where LiDAR initialization fails"""
+        # Create a placeholder layout for the left side
+        self.error_layout = QVBoxLayout()
+        
+        # Create an error message widget
+        error_widget = QWidget()
+        error_widget_layout = QVBoxLayout()
+        
+        error_label = QLabel("LiDAR Sensor Not Connected")
+        error_label.setObjectName("error_title")
+        error_label.setAlignment(Qt.AlignCenter)
+        
+        error_details = QLabel(f"Error: {error_message}")
+        error_details.setObjectName("error_details")
+        error_details.setWordWrap(True)
+        error_details.setAlignment(Qt.AlignCenter)
+        
+        close_button = QPushButton("Close Page")
+        close_button.setObjectName("close_button")
+        close_button.clicked.connect(self.close)
+        
+        error_widget_layout.addStretch(1)
+        error_widget_layout.addWidget(error_label)
+        error_widget_layout.addWidget(error_details)
+        error_widget_layout.addWidget(close_button)
+        error_widget_layout.addStretch(1)
+        
+        error_widget.setLayout(error_widget_layout)
+        self.error_layout.addWidget(error_widget)
+        
+        # Add to main layout
+        self.main_layout.addLayout(self.error_layout, 2)
+        self.main_layout.addLayout(self.info_layout, 1)
+        
+        # Log the error
+        print(f"LiDAR initialization error: {error_message}")
 
     def closeEvent(self, event):
         """Handle close event"""
