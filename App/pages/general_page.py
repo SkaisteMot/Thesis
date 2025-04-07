@@ -27,7 +27,7 @@ class GeneralDemoPage(QWidget):
         elif self.algorithm == "object":
             self.title="Object Detection"
             self.instructions = "Hold up an object to detect and classify"
-            self.recognizer = ObjectRecognizer('yolo11n.pt')
+            self.recognizer = ObjectRecognizer()
             self.description = (
                 "YOLO is a fast object detection system that processes an image by dividing "
                 "it into a grid. Each grid cell predicts whether an object is present and, "
@@ -64,7 +64,7 @@ class GeneralDemoPage(QWidget):
         #Instruction Section
         self.instruction_label = QLabel(self.instructions)
         self.instruction_label.setObjectName("instructions")
-        self.instruction_label.setAlignment(Qt.AlignTop |Qt.AlignCenter)
+        self.instruction_label.setAlignment(Qt.AlignTop)
         self.instruction_label.setWordWrap(True)  # Allow text to wrap
         self.instruction_label.setMinimumWidth(970)
         self.adjust_instructions_height()  # Adjust height based on text
@@ -80,7 +80,8 @@ class GeneralDemoPage(QWidget):
         self.qr_widget=QRCodeWidget("Datasets/QRcodes/rgb_QR.svg",
                                     "Scan this to learn more about RGB cameras!",
                                     label_width=800)
-
+        
+        right_layout.addStretch()
         right_layout.addWidget(self.instruction_label)
         right_layout.addWidget(self.description_label)
         right_layout.addStretch()

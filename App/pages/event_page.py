@@ -29,10 +29,9 @@ class EventCameraPage(QWidget):
 
         self.layout = QVBoxLayout()
         self.layout.setAlignment(Qt.AlignRight)
-
-        self.status_label = QLabel("Starting Event Camera Stream...")
-        self.status_label.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
-        self.status_label.setObjectName("status_label")
+        self.title_label = QLabel("Event Stream")
+        #self.title_label.setAlignment(Qt.AlignCenter)
+        self.title_label.setObjectName("title")
 
         self.description = QLabel(
             "An event camera is a neuromorphic sensor that detects changes "
@@ -50,8 +49,9 @@ class EventCameraPage(QWidget):
         self.qr_widget = QRCodeWidget("Datasets/QRcodes/event_QR.svg",
                                       "Scan this to learn more about event cameras!",
                                       label_width=800)
-
-        self.layout.addWidget(self.status_label)
+        
+        self.layout.addStretch()
+        self.layout.addWidget(self.title_label)
         self.layout.addWidget(self.description)
         self.layout.addStretch()
         self.layout.addWidget(self.qr_widget)
@@ -62,7 +62,6 @@ class EventCameraPage(QWidget):
         """Start Prophesee Viewer embedded in PyQt"""
         if not self.is_running:
             self.is_running = True
-            self.status_label.setText("Starting Event Camera Stream...")
             thread = threading.Thread(target=self._run_prophesee_setup)
             thread.daemon = True
             thread.start()
@@ -71,7 +70,6 @@ class EventCameraPage(QWidget):
         """Start VcXsrv and Prophesee Viewer, then embed it"""
         try:
             # Start VcXsrv
-            self.update_status("Initializing VcXsrv...")
             self.vcxsrv_process = self.start_vcxsrv()
 
             time.sleep(3)  # Allow VcXsrv to initialize
@@ -81,18 +79,16 @@ class EventCameraPage(QWidget):
             env['DISPLAY'] = 'localhost:0.0'
 
             # Start Prophesee Viewer via SSH
-            self.update_status("Connecting to event camera...")
             self.ssh_process = subprocess.Popen(
                 ["ssh", "-Y", "root@169.254.10.10", "sudo", "-E", "prophesee_viewer"],
                 env=env
             )
 
-            time.sleep(2)  # Wait for the window to appear
+            time.sleep(1)  # Wait for the window to appear
             self.embed_vcxsrv_window()
-            self.update_status("Event Camera Stream Running")
 
         except Exception as e:
-            self.update_status(f"Error: {str(e)}")
+            print(e)
 
     def start_vcxsrv(self):
         """Start VcXsrv in single window mode, minimized"""
@@ -105,7 +101,7 @@ class EventCameraPage(QWidget):
 
     def get_vcxsrv_window(self):
         """Find the VcXsrv window handle (HWND)"""
-        time.sleep(2)
+        time.sleep(1)
         for window in gw.getAllWindows():
             if "VcXsrv" in window.title:
                 return window._hWnd  # Return window handle
@@ -133,7 +129,6 @@ class EventCameraPage(QWidget):
     def stop_prophesee_viewer(self):
         """Stop Prophesee Viewer"""
         if self.is_running:
-            self.status_label.setText("Stopping Event Camera Stream...")
             if self.ssh_process:
                 self.ssh_process.terminate()
                 self.ssh_process = None
@@ -141,20 +136,6 @@ class EventCameraPage(QWidget):
                 self.vcxsrv_process.terminate()
                 self.vcxsrv_process = None
             self.is_running = False
-            self.status_label.setText("Event Camera Stream: Stopped")
-
-    def update_status(self, message):
-        """Update status safely in PyQt"""
-        from PyQt5.QtCore import QObject, pyqtSignal
-
-        class Communicator(QObject):
-            status_signal = pyqtSignal(str)
-
-        if not hasattr(self, '_communicator'):
-            self._communicator = Communicator()
-            self._communicator.status_signal.connect(self.status_label.setText)
-
-        self._communicator.status_signal.emit(message)
 
     def closeEvent(self, event):
         """Handle close event"""
