@@ -39,4 +39,5 @@ QWidget {
     font-weight: normal;
     max-width: 900px;
     color:black;
+    text-align: justify;
 }

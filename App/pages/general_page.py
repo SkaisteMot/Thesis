@@ -64,7 +64,7 @@ class GeneralDemoPage(QWidget):
         #Instruction Section
         self.instruction_label = QLabel(self.instructions)
         self.instruction_label.setObjectName("instructions")
-        self.instruction_label.setAlignment(Qt.AlignTop |Qt.AlignCenter)
+        self.instruction_label.setAlignment(Qt.AlignTop)
         self.instruction_label.setWordWrap(True)  # Allow text to wrap
         self.instruction_label.setMinimumWidth(970)
         self.adjust_instructions_height()  # Adjust height based on text
@@ -80,7 +80,8 @@ class GeneralDemoPage(QWidget):
         self.qr_widget=QRCodeWidget("Datasets/QRcodes/rgb_QR.svg",
                                     "Scan this to learn more about RGB cameras!",
                                     label_width=800)
-
+        
+        right_layout.addStretch()
         right_layout.addWidget(self.instruction_label)
         right_layout.addWidget(self.description_label)
         right_layout.addStretch()

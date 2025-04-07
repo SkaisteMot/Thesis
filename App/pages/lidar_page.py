@@ -142,7 +142,7 @@ class LidarCameraPage(QWidget):
         # Right side: Title and description
         self.info_layout = QVBoxLayout()
         self.title_label = QLabel("LiDAR Camera Stream")
-        self.title_label.setAlignment(Qt.AlignCenter)
+        #self.title_label.setAlignment(Qt.AlignCenter)
         self.title_label.setObjectName("title")
 
         self.description_label = QLabel(
@@ -162,6 +162,7 @@ class LidarCameraPage(QWidget):
                                     "Scan this to learn more about LiDAR sensors!",
                                     label_width=800)
 
+        self.info_layout.addStretch()
         self.info_layout.addWidget(self.title_label)
         self.info_layout.addWidget(self.description_label)
         self.info_layout.addStretch()
