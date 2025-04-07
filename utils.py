@@ -2,6 +2,7 @@
 import socket
 import threading
 import time
+import cv2
 from PyQt5.QtWidgets import QWidget, QHBoxLayout, QLabel
 from PyQt5.QtSvg import QSvgWidget
 from PyQt5.QtCore import Qt
@@ -36,7 +37,8 @@ class DeviceStatusChecker:
 
     def _update_all_statuses(self):
         devices = {
-            "169.254.186.74": False,  # RGB
+            #"169.254.186.74": False,  # RGB
+            #"USB-CAM": self._check_webcam_available(), #since using webcam instead of the rgb hdr on rig
             "169.254.65.122": False,  # LIDAR
             "192.168.2.1": False,     # Thermal
             "169.254.10.1": False     # Event
@@ -57,6 +59,16 @@ class DeviceStatusChecker:
             sock.close()
             return result == 0
         except:
+            return False
+        
+    def _check_webcam_available(self):
+        """Check if a USB webcam is available."""
+        try:
+            cap = cv2.VideoCapture(0)
+            is_opened = cap.isOpened()
+            cap.release()
+            return is_opened
+        except Exception:
             return False
             
     def get_status(self, ip):
