@@ -10,7 +10,7 @@ class FacialExpressionRecognitionPage(QWidget):
     """Emotion Recognition"""
     def __init__(self):
         super().__init__()
-        self.expression_recognizer = EmotionRecognizer()
+        self.expression_recognizer = EmotionRecognizer(mtncc=True)
         self.emoji_icons = self._load_emojis()  # Load emojis in the UI class
         self.blank_image = QPixmap(200, 200)
         self.blank_image.fill(Qt.white)  # Blank white image for no emotion
