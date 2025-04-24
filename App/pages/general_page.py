@@ -4,8 +4,8 @@ import cv2
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QHBoxLayout
 from PyQt5.QtGui import QPixmap, QImage,QFontMetrics
 from PyQt5.QtCore import QTimer, Qt
-from Algorithms.Objects.colour_detection import ColourRecognizer
-from Algorithms.Objects.object_detection import ObjectRecognizer
+from Algorithms.Objects.colour_detection import ColourRecogniser
+from Algorithms.Objects.object_detection import ObjectRecogniser
 from utils import load_stylesheet,close_event,QRCodeWidget
 
 class GeneralDemoPage(QWidget):
@@ -16,7 +16,7 @@ class GeneralDemoPage(QWidget):
         self.algorithm = algorithm
         if self.algorithm == "colour":
             self.title="Colour Detection"
-            self.recognizer = ColourRecognizer('Datasets/colour_ranges.csv')
+            self.recogniser = ColourRecogniser('Datasets/colour_ranges.csv')
             self.instructions = "Hold up one of the following colours: Red, Blue," \
             " Yellow, Green, Purple" ##change this to autofill based on csv
             self.description = (
@@ -27,7 +27,7 @@ class GeneralDemoPage(QWidget):
         elif self.algorithm == "object":
             self.title="Object Detection"
             self.instructions = "Hold up an object to detect and classify"
-            self.recognizer = ObjectRecognizer()
+            self.recogniser = ObjectRecogniser()
             self.description = (
                 "YOLO is a fast object detection system that processes an image by dividing "
                 "it into a grid. Each grid cell predicts whether an object is present and, "
@@ -138,9 +138,9 @@ class GeneralDemoPage(QWidget):
 
         # Apply processing
         if self.algorithm == "colour":
-            processed_frame = self.recognizer.detect_and_draw(frame)
+            processed_frame = self.recogniser.detect_and_draw(frame)
         elif self.algorithm == "object":
-            processed_frame = self.recognizer.detect_and_draw(frame)
+            processed_frame = self.recogniser.detect_and_draw(frame)
         else:
             processed_frame = frame
 

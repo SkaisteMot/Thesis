@@ -3,11 +3,11 @@ import cv2
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QHBoxLayout
 from PyQt5.QtGui import QPixmap, QImage, QFont
 from PyQt5.QtCore import QTimer, Qt
-from Algorithms.Body.hand_gesture_test import GestureRecognizer
+from Algorithms.Body.hand_gesture_test import GestureRecogniser
 from utils import load_stylesheet,close_event, QRCodeWidget
 
 class HandGestureRecognitionPage(QWidget):
-    """Hand gesture recognizer"""
+    """Hand gesture recogniser"""
     def __init__(self):
         super().__init__()
         self.icon_paths = {
@@ -23,7 +23,7 @@ class HandGestureRecognitionPage(QWidget):
         self.blank_pixmap = QPixmap(200, 200)
         self.blank_pixmap.fill(Qt.white)
 
-        self.gesture_recognizer = GestureRecognizer()
+        self.gesture_recogniser = GestureRecogniser()
         self.setup_ui()
 
         self.timer = QTimer()
@@ -109,7 +109,7 @@ class HandGestureRecognitionPage(QWidget):
 
     def update_frame(self):
         """Update the video feed and hand gesture icons"""
-        result = self.gesture_recognizer.process_frame()
+        result = self.gesture_recogniser.process_frame()
         if result:
             self.video_feed.setPixmap(self._convert_cv_to_qt(result.main_frame))
             self.left_emoji.setPixmap(self._get_icon(result.left_label))

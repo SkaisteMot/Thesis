@@ -14,13 +14,13 @@ class GestureResult:
     left_label: str
     right_label: str
 
-class GestureRecognizer:
-    """Gesture Recognizer called by UI"""
+class GestureRecogniser:
+    """Gesture Recogniser called by UI"""
     def __init__(self):
-        self.recognizer = self._setup_recognizer()
+        self.recogniser = self._setup_recogniser()
         self.cap = cv2.VideoCapture(0)
 
-    def _setup_recognizer(self):
+    def _setup_recogniser(self):
         base_options = python.BaseOptions(
             model_asset_path='Algorithms/Body/gesture_recognizer.task')
         options = vision.GestureRecognizerOptions(base_options=base_options, num_hands=2)
@@ -34,7 +34,7 @@ class GestureRecognizer:
 
         rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=rgb_frame)
-        recognition_result = self.recognizer.recognize(mp_image)
+        recognition_result = self.recogniser.recognize(mp_image)
 
         gestures_and_landmarks = []
         if recognition_result.gestures:

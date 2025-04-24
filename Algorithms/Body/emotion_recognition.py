@@ -11,12 +11,12 @@ class EmotionResult:
     main_frame: np.ndarray
     emotion_text: str
 
-class EmotionRecognizer:
+class EmotionRecogniser:
     """
-    Emotion recognizer class called by the UI
+    Emotion recogniser class called by the UI
     """
     def __init__(self):
-        self.detector = FER()
+        self.detector = FER(mtcnn=True)
         self.cap = cv2.VideoCapture(0)
 
     def process_frame(self) -> Optional[EmotionResult]:

@@ -8,8 +8,8 @@ https://medium.com/softplus-publication/video-object-tracking-with-yolov8-and-so
 """
 from ultralytics import YOLO
 
-class ObjectRecognizer:
-    """Object Recognizer called from UI"""
+class ObjectRecogniser:
+    """Object Recogniser called from UI"""
     def __init__(self):
         self.model = YOLO('yolov8n.pt')
 

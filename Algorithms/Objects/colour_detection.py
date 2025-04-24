@@ -8,8 +8,8 @@ import cv2
 import pandas as pd
 import numpy as np
 
-class ColourRecognizer:
-    """Colour Recognizer called by UI"""
+class ColourRecogniser:
+    """Colour Recogniser called by UI"""
     def __init__(self, colour_ranges_csv):
         self.colour_ranges = self.load_colour_ranges(colour_ranges_csv)
         self.bgr_colour_dict = {
