@@ -17,8 +17,9 @@ class GeneralDemoPage(QWidget):
         if self.algorithm == "colour":
             self.title="Colour Detection"
             self.recogniser = ColourRecogniser('Datasets/colour_ranges.csv')
-            self.instructions = "Hold up one of the following colours: Red, Blue," \
-            " Yellow, Green, Purple" ##change this to autofill based on csv
+            self.instructions = "Hold up one of the following colours:\n"
+            for name in self.recogniser.bgr_colour_dict:
+                self.instructions += f"{name}, "            
             self.description = (
                 "The program detects colours in an image using predefined colour ranges. It "
                 "first creates a mask to highlight areas that match each colour. Then, it "
