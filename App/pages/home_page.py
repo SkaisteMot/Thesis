@@ -69,10 +69,10 @@ class HomePage(QMainWindow):
     def update_connection_status(self):
         """Update UI with current connection status."""
         # Get current status (these are fast lookups, not network operations)
-        rgb_connected = self.device_checker._check_webcam_available()#if using rgb hdr .get_status("169.254.186.74"
-        lidar_connected = self.device_checker.get_status("169.254.65.122")
-        thermal_connected = self.device_checker.get_status("192.168.2.1")
-        event_connected = self.device_checker.get_status("169.254.10.1")
+        rgb_connected = self.device_checker.get_status("rgb")
+        lidar_connected = self.device_checker.get_status("lidar")
+        thermal_connected = self.device_checker.get_status("thermal")
+        event_connected = self.device_checker.get_status("event")
 
         # Update status indicators
         self.rgbCircle.setPixmap(self.draw_circle("green" if rgb_connected else "red"))
