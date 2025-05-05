@@ -13,3 +13,4 @@ git clone https://github.com/SkaisteMot/Thesis.git
 pip install -r .\requirements.txt
 python .\main.py
 ```
+Further instructions and troubleshooting provided in the manual.
