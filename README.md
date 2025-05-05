@@ -1,16 +1,15 @@
-# Thesis Project
-> To Do: Describe project
-## Plan
-- Create simple Algorithms
-- Simple UI
-- Connect Algorthims to UI
-- More algorithms including streaming
-- Improve UI/UX Designs
+# Multi Sensor Demo Application 
+This project is used on the Sensor Rig in the University of Galway to integrate and showcase four different sensor types: RGB camera, LiDAR, Thermal camera and a Neuromorphic camera.
+The application is accompanied by a supplemental educational website.
 
-### Once the main parts are done can attempt the following
-- Event Camera image reconstruction
-- Custom User Demos functionality
+## Supplemental Deliverables
+**Manual**:
+**Website**:https://skaistemot.github.io/
+**Website Repository**: https://github.com/SkaisteMot/SkaisteMot.github.io
 
-### PYQT book and Git when doing UI
-https://github.com/Apress/Beginning-PyQt--second-edition/blob/main/Chapter02/labels.py
-https://library.kre.dp.ua/Books/2-4%20kurs/Мови%20програмування/Python/Create%20GUI%20Applications%20with%20Python%20and%20QT5_2020.pdf
+### How to setup
+```
+git clone https://github.com/SkaisteMot/Thesis.git
+pip install -r .\requirements.txt
+python .\main.py
+```
