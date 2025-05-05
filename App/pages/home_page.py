@@ -51,7 +51,7 @@ class HomePage(QMainWindow):
         # Timer to update connection status
         self.status_timer = QTimer()
         self.status_timer.timeout.connect(self.update_connection_status)
-        self.status_timer.start(1000)  # Update UI every second
+        self.status_timer.start(5000)  # Update UI every 5 seconds
 
         load_stylesheet(self,'App/styles/home.qss')
 
@@ -131,7 +131,7 @@ class HomePage(QMainWindow):
         self.event_page.showMaximized()
 
     def close_other_pages(self):
-        """"close all other pages before opening another"""
+        """"close all other pages before opening another
         if self.hand_gesture_page:
             self.hand_gesture_page.close()
             self.hand_gesture_page=None
@@ -143,7 +143,7 @@ class HomePage(QMainWindow):
             self.colour_detection_page=None
         if self.object_detection_page:
             self.object_detection_page.close()
-            self.object_detection_page=None
+            self.object_detection_page=None"""
 
     def closeEvent(self, event):
         """

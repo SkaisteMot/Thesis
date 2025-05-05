@@ -25,7 +25,7 @@ class DeviceStatusChecker:
     def __init__(self):
         self.devices={
             #"hdr_rgb":{"type":"ip","address":"169.254.186.74","port":135},
-            "rgb":{"type":"webcam","display_name":"RGB Camera"},
+            "rgb":{"type":"usb","display_name":"RGB Camera"},
             "lidar":{"type":"ip","address":"169.254.65.122","port":135},
             "thermal":{"type":"ip","address":"192.168.2.1","port":135},
             "event":{"type":"ip","address":"169.254.10.1","port":135}
@@ -42,14 +42,14 @@ class DeviceStatusChecker:
             self._update_all_statuses()
             #debug print,remove later
             print("[DeviceStatusChecker] Updated statuses:")
-            for ip, status in self.devices.items():
+            for ip, status in self.device_statuses.items():
                 print(f"  {ip}: {'Online' if status else 'Offline'}")
             time.sleep(self.check_interval)
 
     def _update_all_statuses(self):
         statuses={}
         for device_id, config in self.devices.items():
-            if config["type"]=="webcam":
+            if config["type"]=="usb":
                 statuses[device_id]=self._check_webcam_available()
             elif config["type"]=="ip":
                 statuses[device_id] = self._check_device_connection(
@@ -102,7 +102,7 @@ class QRCodeWidget(QWidget):
 
         # Description Label
         self.qr_label = QLabel(text)
-        self.qr_label.setObjectName("description")
+        self.qr_label.setObjectName("QR_desc")
         self.qr_label.setWordWrap(True)
         self.qr_label.setFixedSize(label_width, label_height)
 
