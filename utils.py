@@ -2,6 +2,7 @@
 import socket
 import threading
 import time
+import cv2
 from PyQt5.QtWidgets import QWidget, QHBoxLayout, QLabel
 from PyQt5.QtSvg import QSvgWidget
 from PyQt5.QtCore import Qt
@@ -22,6 +23,13 @@ def close_event(event, widget):
 class DeviceStatusChecker:
     """Check if sensors are connected"""
     def __init__(self):
+        self.devices={
+            #"hdr_rgb":{"type":"ip","address":"169.254.186.74","port":135},
+            "rgb":{"type":"usb","display_name":"RGB Camera"},
+            "lidar":{"type":"ip","address":"169.254.65.122","port":135},
+            "thermal":{"type":"ip","address":"192.168.2.1","port":135},
+            "event":{"type":"ip","address":"169.254.10.1","port":135}
+        }
         self.device_statuses = {}
         self.status_lock = threading.Lock()
         self.check_interval = 5  # seconds between checks
@@ -32,21 +40,24 @@ class DeviceStatusChecker:
     def _background_check(self):
         while not self._stop_event.is_set():
             self._update_all_statuses()
+            #debug print,remove later
+            print("[DeviceStatusChecker] Updated statuses:")
+            for ip, status in self.device_statuses.items():
+                print(f"  {ip}: {'Online' if status else 'Offline'}")
             time.sleep(self.check_interval)
 
     def _update_all_statuses(self):
-        devices = {
-            "169.254.186.74": False,  # RGB
-            "169.254.65.122": False,  # LIDAR
-            "192.168.2.1": False,     # Thermal
-            "169.254.10.1": False     # Event
-        }
-
-        for ip in devices:
-            devices[ip] = self._check_device_connection(ip)
+        statuses={}
+        for device_id, config in self.devices.items():
+            if config["type"]=="usb":
+                statuses[device_id]=self._check_webcam_available()
+            elif config["type"]=="ip":
+                statuses[device_id] = self._check_device_connection(
+                    config["address"],config.get("port",135)
+                )
 
         with self.status_lock:
-            self.device_statuses = devices
+            self.device_statuses = statuses
     
     def _check_device_connection(self, ip, port=135, timeout=0.5):
         """Check if a device is connected by attempting a socket connection."""
@@ -58,11 +69,21 @@ class DeviceStatusChecker:
             return result == 0
         except:
             return False
+        
+    def _check_webcam_available(self):
+        """Check if a USB webcam is available."""
+        try:
+            cap = cv2.VideoCapture(0)
+            is_opened = cap.isOpened()
+            cap.release()
+            return is_opened
+        except Exception:
+            return False
             
-    def get_status(self, ip):
+    def get_status(self, device_id):
         """Get the current status of a device."""
         with self.status_lock:
-            return self.device_statuses.get(ip, False)
+            return self.device_statuses.get(device_id, False)
     
     def stop(self):
         """Stop the background thread."""
@@ -81,7 +102,7 @@ class QRCodeWidget(QWidget):
 
         # Description Label
         self.qr_label = QLabel(text)
-        self.qr_label.setObjectName("description")
+        self.qr_label.setObjectName("QR_desc")
         self.qr_label.setWordWrap(True)
         self.qr_label.setFixedSize(label_width, label_height)
 

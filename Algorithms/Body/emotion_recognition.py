@@ -11,12 +11,12 @@ class EmotionResult:
     main_frame: np.ndarray
     emotion_text: str
 
-class EmotionRecognizer:
+class EmotionRecogniser:
     """
-    Emotion recognizer class called by the UI
+    Emotion recogniser class called by the UI
     """
     def __init__(self):
-        self.detector = FER()
+        self.detector = FER(mtcnn=True)
         self.cap = cv2.VideoCapture(0)
 
     def process_frame(self) -> Optional[EmotionResult]:
@@ -32,22 +32,33 @@ class EmotionRecognizer:
 
         if emotion_data:
             try:
+                # Find the largest face
                 largest_face = max(emotion_data, key=lambda x: x['box'][2] * x['box'][3])
                 emotions = largest_face["emotions"]
-                box = largest_face["box"]
                 dominant_emotion = max(emotions, key=emotions.get)
+                largest_box = largest_face["box"]
 
-                x, y, w, h = box
-                cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
+                for face in emotion_data:
+                    x, y, w, h = face["box"]
+                    if face == largest_face:
+                        # Green box for the largest face
+                        cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
+                        # Display emotion
+                        cv2.putText(frame, f"Emotion: {dominant_emotion}",
+                                    (10, 50), cv2.FONT_HERSHEY_SIMPLEX, 1,
+                                    (255, 255, 255), 2)
+                    else:
+                        # Red box for other faces
+                        cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 0, 255), 2)
 
-                cv2.putText(frame, f"Emotion: {dominant_emotion}",
-                            (10, 50), cv2.FONT_HERSHEY_SIMPLEX, 1,
-                            (255, 255, 255), 2)
             except Exception as e:
                 print(f"Error processing emotion data: {e}")
                 dominant_emotion = "Unknown"
+        else:
+            dominant_emotion = "Unknown"
 
         return EmotionResult(main_frame=frame, emotion_text=dominant_emotion)
+
 
     def release(self):
         """release resources"""

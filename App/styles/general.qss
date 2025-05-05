@@ -9,9 +9,9 @@ QWidget {
 #instructions {
     font-size: 24px;
     font-weight: 550;
-    padding: 10px;
-    text-align: center;
+    text-align: justify;
     height: 150px;
+    padding-left: 20px;
 }
 
 #description {

@@ -51,7 +51,7 @@ class HomePage(QMainWindow):
         # Timer to update connection status
         self.status_timer = QTimer()
         self.status_timer.timeout.connect(self.update_connection_status)
-        self.status_timer.start(1000)  # Update UI every second
+        self.status_timer.start(5000)  # Update UI every 5 seconds
 
         load_stylesheet(self,'App/styles/home.qss')
 
@@ -69,10 +69,10 @@ class HomePage(QMainWindow):
     def update_connection_status(self):
         """Update UI with current connection status."""
         # Get current status (these are fast lookups, not network operations)
-        rgb_connected = self.device_checker.get_status("169.254.186.74")
-        lidar_connected = self.device_checker.get_status("169.254.65.122")
-        thermal_connected = self.device_checker.get_status("192.168.2.1")
-        event_connected = self.device_checker.get_status("169.254.10.1")
+        rgb_connected = self.device_checker.get_status("rgb")
+        lidar_connected = self.device_checker.get_status("lidar")
+        thermal_connected = self.device_checker.get_status("thermal")
+        event_connected = self.device_checker.get_status("event")
 
         # Update status indicators
         self.rgbCircle.setPixmap(self.draw_circle("green" if rgb_connected else "red"))
@@ -131,7 +131,7 @@ class HomePage(QMainWindow):
         self.event_page.showMaximized()
 
     def close_other_pages(self):
-        """"close all other pages before opening another"""
+        """"close all other pages before opening another
         if self.hand_gesture_page:
             self.hand_gesture_page.close()
             self.hand_gesture_page=None
@@ -143,7 +143,7 @@ class HomePage(QMainWindow):
             self.colour_detection_page=None
         if self.object_detection_page:
             self.object_detection_page.close()
-            self.object_detection_page=None
+            self.object_detection_page=None"""
 
     def closeEvent(self, event):
         """

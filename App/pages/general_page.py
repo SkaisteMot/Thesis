@@ -4,8 +4,8 @@ import cv2
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QHBoxLayout
 from PyQt5.QtGui import QPixmap, QImage,QFontMetrics
 from PyQt5.QtCore import QTimer, Qt
-from Algorithms.Objects.colour_detection import ColourRecognizer
-from Algorithms.Objects.object_detection import ObjectRecognizer
+from Algorithms.Objects.colour_detection import ColourRecogniser
+from Algorithms.Objects.object_detection import ObjectRecogniser
 from utils import load_stylesheet,close_event,QRCodeWidget
 
 class GeneralDemoPage(QWidget):
@@ -16,9 +16,10 @@ class GeneralDemoPage(QWidget):
         self.algorithm = algorithm
         if self.algorithm == "colour":
             self.title="Colour Detection"
-            self.recognizer = ColourRecognizer('Datasets/colour_ranges.csv')
-            self.instructions = "Hold up one of the following colours: Red, Blue," \
-            " Yellow, Green, Purple" ##change this to autofill based on csv
+            self.recogniser = ColourRecogniser('Datasets/colour_ranges.csv')
+            self.instructions = "Hold up one of the following colours:\n"
+            for name in self.recogniser.bgr_colour_dict:
+                self.instructions += f"{name}, "            
             self.description = (
                 "The program detects colours in an image using predefined colour ranges. It "
                 "first creates a mask to highlight areas that match each colour. Then, it "
@@ -27,7 +28,7 @@ class GeneralDemoPage(QWidget):
         elif self.algorithm == "object":
             self.title="Object Detection"
             self.instructions = "Hold up an object to detect and classify"
-            self.recognizer = ObjectRecognizer('yolo11n.pt')
+            self.recogniser = ObjectRecogniser()
             self.description = (
                 "YOLO is a fast object detection system that processes an image by dividing "
                 "it into a grid. Each grid cell predicts whether an object is present and, "
@@ -64,7 +65,7 @@ class GeneralDemoPage(QWidget):
         #Instruction Section
         self.instruction_label = QLabel(self.instructions)
         self.instruction_label.setObjectName("instructions")
-        self.instruction_label.setAlignment(Qt.AlignTop |Qt.AlignCenter)
+        self.instruction_label.setAlignment(Qt.AlignTop)
         self.instruction_label.setWordWrap(True)  # Allow text to wrap
         self.instruction_label.setMinimumWidth(970)
         self.adjust_instructions_height()  # Adjust height based on text
@@ -80,7 +81,8 @@ class GeneralDemoPage(QWidget):
         self.qr_widget=QRCodeWidget("Datasets/QRcodes/rgb_QR.svg",
                                     "Scan this to learn more about RGB cameras!",
                                     label_width=800)
-
+        
+        right_layout.addStretch()
         right_layout.addWidget(self.instruction_label)
         right_layout.addWidget(self.description_label)
         right_layout.addStretch()
@@ -137,9 +139,9 @@ class GeneralDemoPage(QWidget):
 
         # Apply processing
         if self.algorithm == "colour":
-            processed_frame = self.recognizer.detect_and_draw(frame)
+            processed_frame = self.recogniser.detect_and_draw(frame)
         elif self.algorithm == "object":
-            processed_frame = self.recognizer.detect_and_draw(frame)
+            processed_frame = self.recogniser.detect_and_draw(frame)
         else:
             processed_frame = frame
 

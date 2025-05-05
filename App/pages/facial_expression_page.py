@@ -3,14 +3,14 @@ import cv2
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QHBoxLayout
 from PyQt5.QtGui import QPixmap, QImage, QFont
 from PyQt5.QtCore import QTimer, Qt
-from Algorithms.Body.emotion_recognition import EmotionRecognizer
+from Algorithms.Body.emotion_recognition import EmotionRecogniser
 from utils import load_stylesheet, close_event, QRCodeWidget
 
 class FacialExpressionRecognitionPage(QWidget):
     """Emotion Recognition"""
     def __init__(self):
         super().__init__()
-        self.expression_recognizer = EmotionRecognizer()
+        self.expression_recogniser = EmotionRecogniser()
         self.emoji_icons = self._load_emojis()  # Load emojis in the UI class
         self.blank_image = QPixmap(200, 200)
         self.blank_image.fill(Qt.white)  # Blank white image for no emotion
@@ -119,7 +119,7 @@ class FacialExpressionRecognitionPage(QWidget):
 
     def update_frame(self):
         """Update frames from video stream and detected emotion"""
-        result = self.expression_recognizer.process_frame()
+        result = self.expression_recogniser.process_frame()
         if result:
             self.video_feed.setPixmap(self._convert_cv_to_qt(result.main_frame))
             self.face_emoji.setPixmap(self.emoji_icons.get(result.emotion_text, self.blank_image))
