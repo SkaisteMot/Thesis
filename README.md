@@ -8,18 +8,18 @@ The application is accompanied by a supplemental educational website.
 **Website Repository**: https://github.com/SkaisteMot/SkaisteMot.github.io<br>
 
 ## Directory Structure
-├───.github
-│   └───workflows
-├───Algorithms
-│   ├───Body
-│   └───Objects
-├───App
-│   ├───pages
-│   └───styles
-└───Datasets
-    ├───Emojis
-    ├───HandIcons
-    └───QRcodes
+├───.github<br>
+│   └───workflows<br>
+├───Algorithms<br>
+│   ├───Body<br>
+│   └───Objects<br>
+├───App<br>
+│   ├───pages<br>
+│   └───styles<br>
+└───Datasets<br>
+    ├───Emojis<br>
+    ├───HandIcons<br>
+    └───QRcodes<br>
 
 ### How to setup
 ```
