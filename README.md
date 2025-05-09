@@ -17,9 +17,9 @@ The application is accompanied by a supplemental educational website.
 │   ├───pages<br>
 │   └───styles<br>
 └───Datasets<br>
-    ├───Emojis<br>
-    ├───HandIcons<br>
-    └───QRcodes<br>
+&emsp;├───Emojis<br>
+&emsp;├───HandIcons<br>
+&emsp;└───QRcodes<br>
 
 ### How to setup
 ```
