@@ -7,6 +7,20 @@ The application is accompanied by a supplemental educational website.
 **Website**:https://skaistemot.github.io/<br>
 **Website Repository**: https://github.com/SkaisteMot/SkaisteMot.github.io<br>
 
+## Directory Structure
+├───.github
+│   └───workflows
+├───Algorithms
+│   ├───Body
+│   └───Objects
+├───App
+│   ├───pages
+│   └───styles
+└───Datasets
+    ├───Emojis
+    ├───HandIcons
+    └───QRcodes
+
 ### How to setup
 ```
 git clone https://github.com/SkaisteMot/Thesis.git
@@ -14,3 +28,4 @@ pip install -r .\requirements.txt
 python .\main.py
 ```
 Further instructions and troubleshooting provided in the manual.
+
